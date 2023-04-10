@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bai1</title>
+    <link rel="stylesheet" href="Assets/bootstrap-5.3.0-alpha2-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="Assets/bootstrap-icons-1.10.3/bootstrap-icons.css">
+	<link rel="stylesheet" href="Assets/main.css">
+</head>
+<body>
+	<div class="d-flex flex-column bg-dark" data-bs-theme="dark">
+		<div class="d-flex justify-content-md-between justify-content-center px-3 bg-dark-subtle text-white subnavbar flex-wrap" data-bs-ride="carousel">
+			<div class="d-flex flex-wrap justify-content-center">
+				<a class="px-2 link-light text-decoration-none" href="#">HELP</a>
+				<span class="px-2 text-nowrap">
+					<i class="bi bi-telephone-fill"></i> +1-202-555-0151
+				</span>
+			</div>
+			<div class="d-flex flex-wrap justify-content-center">
+				<a class="px-2 link-light text-decoration-none text-nowrap" href="#">MY ACCOUNT</a>
+				<a class="px-2 link-light text-decoration-none text-nowrap" href="#">SIGN IN</a>
+				<a class="px-2 link-light text-decoration-none text-nowrap" href="#">CREATE ACCOUNT</a>
+			</div>
+		</div>
+		<div class="d-flex flex-column bg-sub sticky-top" data-bs-theme="dark">
+			<nav class="navbar navbar-expand-md px-3 px-lg-6">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="Bai1.html" >
+						<img style="height: 50px;" src="Assets/Image/EpicLogo.svg" alt="">
+					</a>
+	
+					<button class="navbar-toggler bg-primary px-3 py-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+	
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav mb-lg-0 h5 font-monospace align-items-lg-center flex-grow-1">
+							<li class="nav-item">
+								<a class="nav-link active" aria-current="page" href="index.html">HOME</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">NEWS</a>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								SUPPORT
+								</a>
+								<ul class="dropdown-menu">
+									<li><a class="dropdown-item" href="#">Games</a></li>
+									<li><a class="dropdown-item" href="#">Accounts</a></li>
+									<li><a class="dropdown-item" href="#">Enterprise</a></li>
+								</ul>
+							</li>
+							<li class="nav-item ms-md-auto">
+								<a href="cart.html" class="nav-link">
+									<i class="bi bi-cart3"></i> CART
+									<span class="bg-light text-dark rounded-4 px-2 ms-1" id="itemCount"></span>
+								</a>
+							</li>
+						</ul>
+						<div class="d-flex align-items-lg-center justify-content-md-center flex-sm-column flex-lg-row">
+							<form class="d-flex py-sm-2" role="search">
+								<input class="form-control me-2 order-2 order-md-1" type="search" placeholder="Search" aria-label="Search" id="searchInput" style="display: none;">
+								<button class="btn btn-outline-light me-2 order-1 order-md-2" type="button" onclick="toggleSearch()"><i class="bi bi-search"></i></button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
+    <div class="container my-5 mx-auto px-sm-0 px-lg-6">
+        <div class="d-md-flex mb-4 mx-auto">
+            <div id="gamesCarousel" class="carousel slide carousel-fade rounded-4 overflow-hidden my-md-auto"  data-bs-ride="carousel">
+                <div class="carousel-inner text-white fw-medium">
+                    <div class="carousel-item active">
+                        <div>
+                            <picture>
+                                <source srcset="Assets/Image/CrimeBossMd.png" media="(min-width: 768px)">
+                                <img class="d-block w-100 rounded-4 ratio ratio-16x9" src="Assets/Image/CrimeBossSm.png" alt="">
+                            </picture>
+                            <div class="fade-bg"></div>
+                            <div class="position-absolute start-0 bottom-0 p-4 ps-md-5 text-start w-100" style="max-width: 320px;">
+                                <div class="mb-4" style="min-height: 55px; max-height: 160px;">
+                                    <img src="Assets/Image/CrimeBossLogo.png" alt="" style="width: 100%;">
+                                </div>
+                                <p>
+                                    Take on the role of Travis Baker – a man with his sights set on becoming the new King of Rockay City, one crime at a time…
+                                </p>
+                                <span class="d-flex mb-4 flex-column flex-md-row">
+                                    Starting at 
+                                    <div class="d-inline-block text-start">
+                                        <span class="ms-2">₫513,000</span>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div>
+                            <picture>
+                                <source srcset="Assets/Image/DeadIsland2Md.png" media="(min-width: 768px)">
+                                <img class="d-block w-100 rounded-4 ratio ratio-16x9" src="Assets/Image/DeadIsland2Sm.png" alt="">
+                            </picture>
+                            <div class="fade-bg"></div>
+                            <div class="position-absolute start-0 bottom-0 p-4 ps-md-5 text-start w-100" style="max-width: 320px;">
+                                <div class="mb-4" style="min-height: 55px; max-height: 160px;">
+                                    <img src="Assets/Image/DeadIsland2Logo.png" alt="" style="width: 100%;">
+                                </div>
+                                <p>
+                                    Explore iconic, gore-drenched Los Angeles and evolve to become the ultimate Zombie Slayer.
+                                </p>
+                                <span class="d-flex mb-4 flex-column flex-md-row">
+                                    Starting at 
+                                    <div class="d-inline-block text-start">
+                                        <span class="ms-md-2">₫1,333,333</span>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div>
+                            <picture>
+                                <source srcset="Assets/Image/DyingLight2Md.png" media="(min-width: 768px)">
+                                <img class="d-block w-100 rounded-4 ratio ratio-16x9" src="Assets/Image/DyingLight2Sm.png" alt="">
+                            </picture>
+                            <div class="fade-bg" style="opacity: 0.2;"></div>
+                            <div class="position-absolute start-0 bottom-0 p-4 ps-md-5 text-start w-100 text-md-black" style="max-width: 320px;">
+                                <div class="mb-4" style="min-height: 55px; max-height: 160px;">
+                                    <img src="Assets/Image/DyingLight2Logo.png" alt="" style="width: 100%;">
+                                </div>
+                                <p>
+                                    The virus won and civilization has fallen back to the Dark Ages. Survive and reshape the world.
+                                </p>
+                                <span class="d-flex mb-4 flex-column flex-md-row">
+                                    Starting at 
+                                    <div class="d-inline-block text-start">
+                                        <span class="ms-md-2 text-decoration-line-through text-dark-emphasis">₫990,000</span>
+                                        <span class="ms-2">₫495,000</span>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div>
+                            <picture>
+                                <source srcset="Assets/Image/RedFallMd.png" media="(min-width: 768px)">
+                                <img class="d-block w-100 rounded-4 ratio ratio-16x9" src="Assets/Image/RedFallSm.png" alt="">
+                            </picture>
+                            <div class="fade-bg"></div>
+                            <div class="position-absolute start-0 bottom-0 p-4 ps-md-5 text-start w-100" style="max-width: 320px;">
+                                <div class="mb-4" style="min-height: 55px; max-height: 160px;">
+                                    <img src="Assets/Image/RedFallLogo.png" alt="" style="width: 100%;">
+                                </div>
+                                <p>
+                                    Uncover the Truth, Take Back Redfall in this new open-world, co-op FPS from Arkane Austin.
+                                </p>
+                                <span class="d-flex mb-4 flex-column flex-md-row">
+                                    Starting at 
+                                    <div class="d-inline-block text-start">
+                                        <span class="ms-md-2">₫999,999</span>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div>
+                            <picture>
+                                <source srcset="Assets/Image/TheLastOfUsMd.png" media="(min-width: 768px)">
+                                <img class="d-block w-100 rounded-4 ratio ratio-16x9" src="Assets/Image/TheLastOfUsSm.png" alt="">
+                            </picture>
+                            <div class="fade-bg"></div>
+                            <div class="position-absolute start-0 bottom-0 p-4 ps-md-5 text-start w-100" style="max-width: 320px;">
+                                <div class="mb-4" style="min-height: 55px; max-height: 160px;">
+                                    <img src="Assets/Image/TheLastOfUsLogo.png" alt="" style="width: 100%;">
+                                </div>
+                                <p>
+                                    Endure and survive. Experience the emotional storytelling and unforgettable characters of Joel and Ellie in The Last of Us.
+                                </p>
+                                <span class="d-flex mb-4 flex-column flex-md-row">
+                                    Starting at 
+                                    <div class="d-inline-block text-start">
+                                        <span class="ms-md-2">₫1,399,000</span>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				<button class="carousel-control-prev" type="button" data-bs-target="#gamesCarousel" data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Previous</span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#gamesCarousel" data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Next</span>
+				</button>
+            </div>
+            <div id="carousel-buttons" class="d-md-none d-flex justify-content-center">
+                <button type="button" data-bs-target="#gamesCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#gamesCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#gamesCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#gamesCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#gamesCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+            </div>
+        </div>
+		<div>
+			<h1 class="text-center text-dark-emphasis mb-4">
+				MOST POPULAR
+			</h1>
+			<div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">  
+				<div class="col mb-4">
+					<div class="card h-100 shadow rounded-0">
+						<div class="position-relative">
+							<img src="Assets/Image/CrimeBoss.png" class="card-img-top rounded-0 p-4" alt="...">
+							<div class="position-absolute start-0" style="bottom: 20%;">
+								<span class="bg-success text-white fw-semibold fs-3 px-2">
+									NEW</span><span class="bg-danger text-white fw-semibold fs-3 px-2 rounded-end-3">15% OFF
+								</span>
+							</div>
+						</div>
+						<div class="card-body pt-0 d-flex flex-column">
+							<h5 class="card-title text-center text-dark">Crime Boss: Rockay City</h5>
+							<p class="card-text text-center text-secondary p-3">
+								Crime Boss: Rockay City is an organized crime game 
+								combining first-person shooter action and turf wars, 
+								playable solo or with friends.
+							</p>
+							<span class="mx-auto mt-auto p-3 text-center">
+								<del>₫513,000</del> <strong>₫436,050</strong>
+							</span>
+							<div class="d-flex justify-content-center">
+								<button class="btn btn-primary" style="--bs-btn-padding-y: .75rem;" type="button">
+									<i class="bi bi-cart3"></i> ADD TO CART
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+	
+				<div class="col mb-4">
+					<div class="card h-100 shadow rounded-0">
+						<div class="position-relative">
+							<img src="Assets/Image/Assassin'sCreed.png" class="card-img-top rounded-0 p-4" alt="...">
+							<div class="position-absolute start-0" style="bottom: 20%;">
+								<span class="bg-danger text-white fw-semibold fs-3 px-2 rounded-end-3">
+									67% OFF
+								</span>
+							</div>
+						</div>
+						<div class="card-body pt-0 d-flex flex-column">
+							<h5 class="card-title text-center text-dark">Assassin's Creed® Valhalla Standard Edition</h5>
+							<p class="card-text text-center text-secondary p-3">
+								Become a legendary Viking on a quest for glory. 
+								Raid your enemies, grow your settlement, and build your political power.
+							</p>
+							<span class="mx-auto mt-auto p-3 text-center">
+								<del>₫990,000</del> <strong>₫326,700</strong>
+							</span>
+							<div class="d-flex justify-content-center">
+								<button class="btn btn-primary" style="--bs-btn-padding-y: .75rem;" type="button">
+									<i class="bi bi-cart3"></i> ADD TO CART
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+	
+				<div class="col mb-4">
+					<div class="card h-100 shadow rounded-0">
+						<div class="position-relative">
+							<img src="Assets/Image/Werewolf.png" class="card-img-top rounded-0 p-4" alt="...">
+							<div class="position-absolute start-0" style="bottom: 20%;">
+								<span class="bg-success text-white fw-semibold fs-3 px-2">NEW</span>
+							</div>
+						</div>
+						<div class="card-body pt-0 d-flex flex-column">
+							<h5 class="card-title text-center text-dark">Werewolf: The Apocalypse – Earthblood</h5>
+							<p class="card-text text-center text-secondary p-3">
+								A unique experience full of savage combat and mystical adventures. 
+								You are Cahal, a powerful Garou who can transform into a wolf 
+								and a Crinos, a huge ferocious beast.
+							</p>
+							<span class="mx-auto mt-auto p-3 text-center">
+								<strong>₫350,000</strong>
+							</span>
+							<div class="d-flex justify-content-center">
+								<button class="btn btn-primary" style="--bs-btn-padding-y: .75rem;" type="button">
+									<i class="bi bi-cart3"></i> ADD TO CART
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+	
+				<div class="col mb-4">
+					<div class="card h-100 shadow rounded-0">
+						<img src="Assets/Image/Windbound.png" class="card-img-top rounded-0 p-4" alt="...">
+						<div class="card-body pt-0 d-flex flex-column">
+							<h5 class="card-title text-center text-dark">Windbound</h5>
+							<p class="card-text text-center text-secondary p-3">
+								The Forbidden Islands are Calling, 
+								Unlock their Secrets Shipwrecked on an island, explore, adapt 
+								and navigate the land and perilous seas to stay alive.
+							</p>
+							<span class="mx-auto mt-auto p-3 text-center">
+								<strong>₫188,000</strong>
+							</span>
+							<div class="d-flex justify-content-center">
+								<button class="btn btn-primary" style="--bs-btn-padding-y: .75rem;" type="button">
+									<i class="bi bi-cart3"></i> ADD TO CART
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="bg-footer">
+		<footer class="container px-lg-6">
+			<div class="d-flex justify-content-around h1 py-3 text-light">
+				<a href="#" class="text-light"><i class="fa-brands fa-square-facebook"></i></i></a>
+				<a href="#" class="text-light"><i class="bi bi-twitter"></i></a>
+				<a href="#" class="text-light"><i class="bi bi-youtube"></i></a>
+			</div>
+			<div class="d-flex flex-column text-light text-center text-md-start mb-2">
+                <div class="my-3">
+                    <span class="text-uppercase h4 text-dark-emphasis fw-semibold" style="font-family: Fira_Mono_Regular, Brutal_Light, monospace; letter-spacing: 3px;">
+                        RESOURCES
+                    </span>
+				</div>
+				<div class="d-flex flex-column flex-md-row" style="font-family: Brutal_Regular, Open Sans, arial;">
+					<div class="mb-4 mb-md-0 col-md-4 col-xl-3">
+						<div class="card bg-transparent border-0 text-light">
+							<p>Distribute on Epic Games</p>
+							<p>Careers</p>
+							<p>Company</p>
+							<p>Fan Art Policy</p>
+						</div>
+					</div>
+					<div class="mb-4 mb-md-0 col-md-3 col-xl-2">
+						<div class="card bg-transparent border-0 text-light">
+							<p>Server Status</p>
+							<p>UX Research</p>
+							<p>Store EULA</p>
+						</div>
+					</div>
+					<div class="col-md-3 col-xl-2">
+						<div class="card bg-transparent border-0 text-light">
+							<p>Online Services</p>
+							<p>Community Rules</p>
+							<p>Epic Newsroom</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="d-flex flex-column text-light text-center text-md-start mb-2">
+                <div class="my-3">
+                    <span class="text-uppercase h4 text-dark-emphasis fw-semibold" style="font-family: Fira_Mono_Regular, Brutal_Light, monospace; letter-spacing: 3px;">
+                        MADE BY EPIC GAMES
+                    </span>
+				</div>
+				<div class="d-flex flex-column flex-md-row" style="font-family: Brutal_Regular, Open Sans, arial;">
+					<div class="col-md-4 col-xl-3">
+						<div class="card bg-transparent border-0 text-light">
+                            <p>Battle Breakers</p>
+                            <p>Fall Guys</p>
+                            <p>Fortnite</p>
+                            <p>Infinity Blade</p>
+						</div>
+					</div>
+					<div class="col-md-4 col-xl-3">
+						<div class="card bg-transparent border-0 text-light">
+                            <p>Robo Recall</p>
+                            <p>Rocket League</p>
+                            <p>Shadow Complex</p>
+                            <p>Unreal Tournament</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr class="text-light-emphasis border">
+			<div class="text-white p-3">
+				© 2023, Epic Games, Inc. All rights reserved.
+				 Epic, Epic Games, the Epic Games logo, Fortnite, the Fortnite logo, Unreal,
+				  Unreal Engine, the Unreal Engine logo, Unreal Tournament,
+				   and the Unreal Tournament logo are trademarks or registered trademarks of Epic Games,
+				    Inc. in the United States of America and elsewhere.
+					 Other brands or product names are the trademarks of their respective owners.
+			</div>
+		</footer>
+	</div>
+	<script src="Assets/jquery-3.6.4.min.js"></script>
+    <script src="Assets/bootstrap-5.3.0-alpha2-dist/js/bootstrap.bundle.min.js"></script>
+	<script src="Assets/myscript.js"></script>
+</body>
+</html>

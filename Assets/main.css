@@ -1,0 +1,82 @@
+
+.bg-main { background-color: #121212; }
+.bg-footer { background-color: #2a2a2a; }
+body {
+    background: #121212;
+}
+input[type="search"]:focus {
+    border-color: lightgray;
+    box-shadow: 0 0 0 0.2rem rgba(211, 211, 211, 0.25);
+}
+
+.fade-bg {
+    position: absolute;
+    width: 100%;
+    height: 80%;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to top, rgba(11, 11, 11, 0.85), rgba(11, 11, 11, 0));
+}
+
+#carousel-buttons button {
+    border-radius: 50%;
+    border: none;
+    padding: 5px !important;
+    margin: 20px 10px;
+    background-color: #2a2a2a;
+}
+
+#carousel-buttons .active {
+    background-color: white;
+}
+
+.item-name  {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.accsp-fade-bg {
+    aspect-ratio: 1 / 1;
+    height: 100%;
+    clip-path: polygon(25% -1%, 101% -1%, 101% 101%, 0 101%);
+}
+
+@media (min-width: 768px) {
+    .text-md-black { color: black !important; }
+    div#carousel-buttons {
+        width: 20%;
+        font-size: 12px;
+    }
+    div#carousel-buttons img {
+        height: 50px;
+        border-radius: 5px;
+    }
+    #carousel-buttons .active {
+        background-color: var(--sub-color);
+    }
+    .fade-bg {
+        position: absolute;
+        width: 80%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: linear-gradient(270deg, rgba(11, 11, 11, 0) 0%, #0B0B0B 100%, #0B0B0B 100%);
+        opacity: 0.6;
+    }
+    .px-md-7 {
+        padding-right: 10rem ;
+        padding-left: 10rem ;
+    }
+    .ratio-md-21x4 {
+        --bs-aspect-ratio: 21.42857142855% !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .px-lg-6 {
+        padding-right: 6rem !important;
+        padding-left: 6rem !important ;
+    }
+
+}

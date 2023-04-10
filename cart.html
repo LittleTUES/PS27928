@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bai2</title>
+    <link rel="stylesheet" href="Assets/bootstrap-5.3.0-alpha2-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="Assets/bootstrap-icons-1.10.3/bootstrap-icons.css">
+    <link rel="stylesheet" href="Assets/main.css">
+</head>
+<body>
+	<div class="d-flex flex-column bg-dark" data-bs-theme="dark">
+		<div class="d-flex justify-content-md-between justify-content-center px-3 bg-dark-subtle text-white subnavbar flex-wrap">
+			<div class="d-flex flex-wrap justify-content-center">
+				<a class="px-2 link-light text-decoration-none" href="#">HELP</a>
+				<span class="px-2 text-nowrap">
+					<i class="bi bi-telephone-fill"></i> +1-202-555-0151
+				</span>
+			</div>
+			<div class="d-flex flex-wrap justify-content-center">
+				<a class="px-2 link-light text-decoration-none text-nowrap" href="#">MY ACCOUNT</a>
+				<a class="px-2 link-light text-decoration-none text-nowrap" href="#">SIGN IN</a>
+				<a class="px-2 link-light text-decoration-none text-nowrap" href="#">CREATE ACCOUNT</a>
+			</div>
+		</div>
+		<div class="d-flex flex-column bg-sub sticky-top" data-bs-theme="dark">
+			<nav class="navbar navbar-expand-md px-3 px-lg-6">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="Bai1.html" >
+						<img style="height: 50px;"
+                         src="Assets/Image/EpicLogo.svg" alt="">
+					</a>
+	
+					<button class="navbar-toggler bg-primary px-3 py-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+	
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav mb-lg-0 h5 font-monospace align-items-lg-center flex-grow-1">
+							<li class="nav-item">
+								<a class="nav-link" aria-current="page" href="index.html">HOME</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">NEWS</a>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								SUPPORT
+								</a>
+								<ul class="dropdown-menu">
+									<li><a class="dropdown-item" href="#">Games</a></li>
+									<li><a class="dropdown-item" href="#">Accounts</a></li>
+									<li><a class="dropdown-item" href="#">Enterprise</a></li>
+								</ul>
+							</li>
+							<li class="nav-item ms-md-auto me-md-2">
+								<a href="cart.html" class="nav-link active">
+                                    <span>
+                                        <i class="bi bi-cart3"></i> CART
+                                    </span>
+                                    <span class="p-1 px-3 ms-1 bg-light text-dark rounded-5 position-relative">
+                                        <span class="position-absolute top-50 translate-middle" id="itemCount"></span>
+                                    </span>
+								</a>
+							</li>
+						</ul>
+						<div class="d-flex align-items-lg-center justify-content-md-center flex-sm-column flex-lg-row">
+							<form class="d-flex py-sm-2" role="search">
+								<input class="form-control me-2 order-2 order-md-1" type="search" placeholder="Search" aria-label="Search" id="searchInput" style="display: none;">
+								<button class="btn btn-outline-light me-2 order-1 order-md-2" type="button" onclick="toggleSearch()"><i class="bi bi-search"></i></button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
+	<div class="bg-main py-4">
+        <div class="container">
+            <div class="h2 text-white mb-3">My Cart</div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="d-flex flex-column bg-footer rounded-2 mb-4 item">
+                        <div class="d-flex flex-column flex-sm-row p-4 text-light text-center text-sm-start">
+                            <div class="pe-sm-4 ">
+                                <img class="rounded-2" style="min-width: 80px; max-width: 131px;"
+                                 src="Assets/Image/TheLastOfUs.png" alt="">
+                            </div>
+                            <div class="d-flex flex-column justify-content-between mt-4 m-sm-0 w-100">
+                                <div class="d-flex flex-column flex-lg-row">
+                                    <div class="me-sm-auto">
+                                        <span class="p-2 rounded-3 bg-sub fw-medium">BASE GAME</span>
+                                        <div class="h5 fw-normal mt-2">The Last of Us™ Part I</div>
+                                    </div>
+                                    <div class="text-nowrap text-lg-end ps-lg-4" data-price="1399000">
+                                        <span>₫1,399,000</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <i class="bi bi-windows lights"></i>
+                                    <span class="link-light text-decoration-underline fw-medium remove-link" type="button" style="letter-spacing: 0.5px;">Remove</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column bg-footer rounded-2 mb-4 item">
+                        <div class="d-flex flex-column flex-sm-row p-4 text-light text-center text-sm-start">
+                            <div class="pe-sm-4 ">
+                                <img class="rounded-2" style="min-width: 80px; max-width: 131px;"
+                                 src="Assets/Image/DyingLight.png" alt="">
+                            </div>
+                            <div class="d-flex flex-column justify-content-between mt-4 m-sm-0 w-100">
+                                <div class="d-flex flex-column flex-lg-row">
+                                    <div class="me-sm-auto">
+                                        <span class="p-2 rounded-3 bg-sub fw-medium">BASE GAME</span>
+                                        <div class="h5 fw-normal mt-2">Dying Light Enhanced Edition</div>
+                                    </div>
+                                    <div class="text-nowrap text-lg-end ps-lg-4" data-price="329000" data-discount="329000">
+                                        <span class="me-1"><del>₫329,000</del></span>
+                                        <span>Free</span>
+                                        <div class="text-wrap">Sale ends 4/13/2023 at 10:00 PM</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <i class="bi bi-windows"></i>
+                                    <span class="link-light text-decoration-underline fw-medium remove-link" type="button" style="letter-spacing: 0.5px;">Remove</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column bg-footer rounded-2 mb-4 item">
+                        <div class="d-flex flex-column flex-sm-row p-4 text-light text-center text-sm-start">
+                            <div class="pe-sm-4 ">
+                                <img class="rounded-2" style="min-width: 80px; max-width: 131px;"
+                                 src="Assets/Image/D2LightFall.png" alt="">
+                            </div>
+                            <div class="d-flex flex-column justify-content-between mt-4 m-sm-0 w-100">
+                                <div class="d-flex flex-column flex-lg-row">
+                                    <div class="me-sm-auto">
+                                        <span class="p-2 rounded-3 bg-sub fw-medium">ADD-ON</span>
+                                        <div class="h5 fw-normal mt-2">Destiny 2: Lightfall</div>
+                                    </div>
+                                    <div class="text-nowrap text-lg-end ps-lg-4" data-price="690000" data-discount="227700">
+                                        <span class="me-1"><del>₫690,000</del></span>
+                                        <span>₫462,300</span>
+                                        <div class="text-wrap">Sale ends 4/13/2023 at 10:00 PM</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <span class="link-light text-decoration-underline fw-medium remove-link" type="button" style="letter-spacing: 0.5px;">Remove</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex flex-column text-white">
+                        <div class="h2 fw-normal">
+                            Games and Apps Summary
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Price</span>
+                            <span>đ<span id="total">0</span></span>
+                        </div>
+                        <div class="justify-content-between" id="discountBlock" style="display: flex;">
+                            <span>Sale Discount</span>
+                            <span>-đ<span id="discount">0</span></span>
+                        </div>
+                        <hr class="border-dark-subtle">
+                        <div class="fw-bold d-flex justify-content-between">
+                            <span>Subtotal</span>
+                            <span>đ<span id="subtotal">0</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+    <div class="bg-footer">
+		<footer class="container px-lg-6">
+			<div class="d-flex justify-content-around h1 py-3 text-light">
+				<a href="#" class="text-light"><i class="fa-brands fa-square-facebook"></i></i></a>
+				<a href="#" class="text-light"><i class="bi bi-twitter"></i></a>
+				<a href="#" class="text-light"><i class="bi bi-youtube"></i></a>
+			</div>
+			<div class="d-flex flex-column text-light text-center text-md-start mb-2">
+                <div class="my-3">
+                    <span class="text-uppercase h4 text-dark-emphasis fw-semibold" style="font-family: Fira_Mono_Regular, Brutal_Light, monospace; letter-spacing: 3px;">
+                        RESOURCES
+                    </span>
+				</div>
+				<div class="d-flex flex-column flex-md-row" style="font-family: Brutal_Regular, Open Sans, arial;">
+					<div class="mb-4 mb-md-0 col-md-4 col-xl-3">
+						<div class="card bg-transparent border-0 text-light">
+							<p>Distribute on Epic Games</p>
+							<p>Careers</p>
+							<p>Company</p>
+							<p>Fan Art Policy</p>
+						</div>
+					</div>
+					<div class="mb-4 mb-md-0 col-md-3 col-xl-2">
+						<div class="card bg-transparent border-0 text-light">
+							<p>Server Status</p>
+							<p>UX Research</p>
+							<p>Store EULA</p>
+						</div>
+					</div>
+					<div class="col-md-3 col-xl-2">
+						<div class="card bg-transparent border-0 text-light">
+							<p>Online Services</p>
+							<p>Community Rules</p>
+							<p>Epic Newsroom</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="d-flex flex-column text-light text-center text-md-start mb-2">
+                <div class="my-3">
+                    <span class="text-uppercase h4 text-dark-emphasis fw-semibold" style="font-family: Fira_Mono_Regular, Brutal_Light, monospace; letter-spacing: 3px;">
+                        MADE BY EPIC GAMES
+                    </span>
+				</div>
+				<div class="d-flex flex-column flex-md-row" style="font-family: Brutal_Regular, Open Sans, arial;">
+					<div class="col-md-4 col-xl-3">
+						<div class="card bg-transparent border-0 text-light">
+                            <p>Battle Breakers</p>
+                            <p>Fall Guys</p>
+                            <p>Fortnite</p>
+                            <p>Infinity Blade</p>
+						</div>
+					</div>
+					<div class="col-md-4 col-xl-3">
+						<div class="card bg-transparent border-0 text-light">
+                            <p>Robo Recall</p>
+                            <p>Rocket League</p>
+                            <p>Shadow Complex</p>
+                            <p>Unreal Tournament</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr class="text-light-emphasis border">
+			<div class="text-white p-3">
+				© 2023, Epic Games, Inc. All rights reserved.
+				 Epic, Epic Games, the Epic Games logo, Fortnite, the Fortnite logo, Unreal,
+				  Unreal Engine, the Unreal Engine logo, Unreal Tournament,
+				   and the Unreal Tournament logo are trademarks or registered trademarks of Epic Games,
+				    Inc. in the United States of America and elsewhere.
+					 Other brands or product names are the trademarks of their respective owners.
+			</div>
+		</footer>
+	</div>
+    <script src="Assets/jquery-3.6.4.min.js"></script>
+    <script src="Assets/bootstrap-5.3.0-alpha2-dist/js/bootstrap.bundle.min.js"></script>
+	<script src="Assets/myscript.js"></script>
+</body>
+</html>
