@@ -7,8 +7,9 @@ const user = new Schema({
     email: { type: String, unique: true, required: true },
     phone: { type: String, unique: true, required: true },
     password: { type: String, required: true },
-    address: { type: String },
+    address: { type: String, default: '' },
     // resetPasswordToken: { type: String },
     // resetPasswordExpires: { type: Date },
 });
 module.exports = mongoose.models.user || mongoose.model('user', user);
+
