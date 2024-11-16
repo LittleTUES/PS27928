@@ -62,47 +62,64 @@ router.get('/', async function (req, res) {
  * @swagger
  * /categories/{categoryId}/products:
  *   get:
- *     summary: Lấy danh sách sản phẩm theo category
+ *     summary: Get products by category ID
  *     tags: 
- *       - Categories
- *     security:
- *       - bearerAuth: []
+ *       - Products
+ *     description: Retrieve a list of products based on category ID
  *     parameters:
  *       - in: path
  *         name: categoryId
  *         required: true
  *         schema:
  *           type: string
- *         description: ID của category
+ *         description: ID of the category
  *     responses:
  *       '200':
- *         description: Thành công trả về danh sách sản phẩm
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       price:
+ *                         type: number
+ *                       category:
+ *                         type: string
  *       '400':
- *         description: Thất bại
- *       '401':
- *         description: Unauthorized
- *       '403':
- *         description: JWT expired
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */
 router.get('/:categoryId/products', async function (req, res) {
     try {
-        const token = req.header("Authorization").split(' ')[1];
-        if (token) {
-            JWT.verify(token, config.SECRETKEY, async function (err, id) {
-                if (err) {
-                    res.status(403).json({ "status": 403, "err": err });
-                } else {
-                    const categoryId = req.params.categoryId;
-                    console.log("categoryId: ", categoryId);
-                    var list = await productModel.find({ category: categoryId });
-                    res.status(200).json(list);
-                }
-            });
-        } else {
-            res.status(401).json({ "status": 401, message: "Unauthorized" });
-        }
+        const categoryId = req.params.categoryId;
+        var products = await productModel.find({ cateId: categoryId });
+        res.status(200).json({
+            status: true,
+            data: products
+        });
     } catch (err) {
-        res.status(400).json({ "status": 400, message: "Failed: " + err });
+        res.status(400).json({ status: false, message: "Failed: " + err });
     }
 });
 
@@ -141,7 +158,7 @@ router.post('/add', async function (req, res) {
         if (token) {
             JWT.verify(token, config.SECRETKEY, async function (err, id) {
                 if (err) {
-                    res.status(403).json({ "status": 403, "err": err });
+                    res.status(403).json({ status: 403, "err": err });
                 } else {
                     const { name } = req.body;
                     const itemAdd = { name };
@@ -154,10 +171,10 @@ router.post('/add', async function (req, res) {
                 }
             });
         } else {
-            res.status(401).json({ "status": 401, message: "Unauthorized" });
+            res.status(401).json({ status: 401, message: "Unauthorized" });
         }
     } catch (err) {
-        res.status(400).json({ "status": 400, message: "Failed: " + err });
+        res.status(400).json({ status: 400, message: "Failed: " + err });
     }
 });
 
@@ -199,7 +216,7 @@ router.put('/edit', async function (req, res) {
         if (token) {
             JWT.verify(token, config.SECRETKEY, async function (err, id) {
                 if (err) {
-                    res.status(403).json({ "status": 403, "err": err });
+                    res.status(403).json({ status: 403, "err": err });
                 } else {
                     const { id, name } = req.body;
                     var itemUpdate = await Category.findById(id);
@@ -217,10 +234,10 @@ router.put('/edit', async function (req, res) {
                 }
             });
         } else {
-            res.status(401).json({ "status": 401, message: "Unauthorized" });
+            res.status(401).json({ status: 401, message: "Unauthorized" });
         }
     } catch (err) {
-        res.status(400).json({ "status": 400, message: "Failed: " + err });
+        res.status(400).json({ status: 400, message: "Failed: " + err });
     }
 });
 
@@ -258,7 +275,7 @@ router.delete('/delete', async function (req, res) {
         if (token) {
             JWT.verify(token, config.SECRETKEY, async function (err, id) {
                 if (err) {
-                    res.status(403).json({ "status": 403, "err": err });
+                    res.status(403).json({ status: 403, "err": err });
                 } else {
                     const { id } = req.query;
                     const itemDelete = await Category.findByIdAndDelete(id);
@@ -274,10 +291,10 @@ router.delete('/delete', async function (req, res) {
                 }
             });
         } else {
-            res.status(401).json({ "status": 401, message: "Unauthorized" });
+            res.status(401).json({ status: 401, message: "Unauthorized" });
         }
     } catch (err) {
-        res.status(400).json({ "status": 400, message: "Failed: " + err });
+        res.status(400).json({ status: 400, message: "Failed: " + err });
     }
 });
 
