@@ -1,8 +1,10 @@
 var express = require("express");
 var router = express.Router();
 
-var productModel = require("../models/product");
-var categoryModel = require("../models/category");
+var Product = require("../models/product");
+var Category = require("../models/category");
+var Size = require("../models/size");
+var ProductSize = require("../models/productSize");
 
 const JWT = require('jsonwebtoken');
 const config = require("../utils/config-env");
@@ -11,162 +13,208 @@ const config = require("../utils/config-env");
  * @swagger
  * /products:
  *   get:
- *     summary: Lấy danh sách sản phẩm
+ *     summary: Get list of products
  *     tags: 
  *       - Products
- *     security:
- *       - bearerAuth: []
+ *     description: Retrieve a list of all products
  *     responses:
  *       '200':
- *         description: Thành công trả về danh sách sản phẩm
- *       '400':
- *         description: Thất bại
- *       '401':
- *         description: Không được phép
- *       '403':
- *         description: JWT đã hết hạn
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       // thêm các thuộc tính của đối tượng sản phẩm tại đây
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */
 router.get('/', async function (req, res) {
     try {
-        // const token = req.header("Authorization").split(' ')[1];
-        const authorizationHeader = req.header("Authorization");
-        const token = authorizationHeader.split(' ')[1];
-        if (token) {
-            JWT.verify(token, config.SECRETKEY, async function (err, id) {
-                if (err) {
-                    res.status(403).json({ "status": 403, "err": err });
-                } else {
-                    //xử lý chức năng tương ứng với API
-                    var list = await productModel.find();
-                    res.status(200).json(list);
-                }
-            });
-        } else {
-            res.status(401).json({ "status": 401, message: "Unauthorized" });
-        }
-    } catch (err) {
-        res.status(400).json({ "status": 400, message: "Failed: " + err });
+        const products = await Product.find().exec();
+        res.status(200).json({
+            status: true,
+            data: products,
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: `Failed: ${error.message}`,
+        });
     }
 });
 
 /**
  * @swagger
- * /products/detail/{productId}:
+ * /products/product-detail/{productId}:
  *   get:
- *     summary: Lấy chi tiết sản phẩm
- *     tags:
+ *     summary: Get product details by product ID
+ *     tags: 
  *       - Products
- *     security:
- *       - bearerAuth: []
+ *     description: Retrieve detailed information about a product, including its sizes
  *     parameters:
  *       - in: path
  *         name: productId
  *         required: true
  *         schema:
  *           type: string
- *           example: 6706d1c95944ac65d27646c3
- *         description: ID của product
+ *         description: ID of the product
  *     responses:
  *       '200':
- *         description: Thành công trả về sản phẩm
- *       '400':
- *         description: Thất bại
- *       '401':
- *         description: Không được phép
- *       '403':
- *         description: JWT đã hết hạn
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     image:
+ *                       type: array
+ *                     sizes:
+ *                       type: array
+ *                     stocks:
+ *                       type: number
+ *                     subcategory:
+ *                       type: string
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           sizeName:
+ *                             type: string
+ *                           sizeValue:
+ *                             type: string
+ *       '404':
+ *         description: Product not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */
-router.get('/detail/:productId', async function (req, res) {
+router.get('/product-detail/:productId', async (req, res) => {
     try {
-        const authorizationHeader = req.header("Authorization");
-        const token = authorizationHeader.split(' ')[1];
-        if (token) {
-            JWT.verify(token, config.SECRETKEY, async function (err, id) {
-                if (err) {
-                    res.status(403).json({ "status": 403, "err": err });
-                } else {
-                    const { productId } = req.params; // Sửa lại từ id thành productId
-                    var item = await productModel.findById(productId);
-                    res.status(200).json(item);
-                }
-            });
-        } else {
-            res.status(401).json({ "status": 401, message: "Unauthorized" });
+        const productId = req.params.productId;
+
+        // Tìm sản phẩm bằng id
+        const product = await Product.findById(productId).lean();
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
         }
-    } catch (err) {
-        res.status(400).json({ "status": 400, message: "Failed: " + err });
+
+        // Tìm các kích thước liên quan đến sản phẩm
+        const productSizes = await ProductSize.find({ productId: productId }).lean();
+
+        const sizeIds = productSizes.map(ps => ps.sizeId);
+
+        const sizes = await Size.find({ _id: { $in: sizeIds } }).lean();
+
+        // Gộp sản phẩm và kích thước
+        const productDetail = {
+            ...product,
+            sizes: sizes
+        };
+
+        res.status(200).json({ status: true, data: productDetail });
+    } catch (error) {
+        res.status(500).json({ status: false, message: "Failed: " + err });
     }
 });
 
-
-/**
- * @swagger
- * /products/add:
- *   post:
- *     summary: Thêm sản phẩm mới
- *     tags: 
- *       - Products
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 example: example
- *               image:
- *                 type: string
- *                 example: https://example.com/
- *               description:
- *                 type: string
- *                 example: example
- *               category:
- *                 type: string
- *                 example: 6706cd925944ac65d27646a2
- *     responses:
- *       '200':
- *         description: Thêm sản phẩm thành công
- *       '400':
- *         description: Thất bại
- *       '401':
- *         description: Unauthorized
- *       '403':
- *         description: JWT hết hạn
- */
-router.post('/add', async function (req, res) {
-    try {
-        const token = req.header("Authorization").split(' ')[1];
-        if (token) {
-            JWT.verify(token, config.SECRETKEY, async function (err, id) {
-                if (err) {
-                    res.status(403).json({ "status": 403, "err": err });
-                } else {
-                    const { name, image, description, category } = req.body;
-                    const obj = await categoryModel.findById(category);
-                    if (obj) {
-                        const itemAdd = { name, image, description, category };
-                        await productModel.create(itemAdd);
-                        res.status(200).json({
-                            status: true,
-                            message: "Add product successful",
-                            data: itemAdd
-                        });
-                    } else {
-                        return res.status(400).json({ status: false, message: "Category does not exist" });
-                    }
-                }
-            });
-        } else {
-            res.status(401).json({ "status": 401, message: "Unauthorized" });
-        }
-    } catch (err) {
-        res.status(400).json({ "status": 400, message: "Failed: " + err });
-    }
-});
+// /**
+//  * @swagger
+//  * /products/add:
+//  *   post:
+//  *     summary: Thêm sản phẩm mới
+//  *     tags: 
+//  *       - Products
+//  *     security:
+//  *       - bearerAuth: []
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             properties:
+//  *               name:
+//  *                 type: string
+//  *                 example: example
+//  *               image:
+//  *                 type: string
+//  *                 example: https://example.com/
+//  *               description:
+//  *                 type: string
+//  *                 example: example
+//  *               category:
+//  *                 type: string
+//  *                 example: 6706cd925944ac65d27646a2
+//  *     responses:
+//  *       '200':
+//  *         description: Thêm sản phẩm thành công
+//  *       '400':
+//  *         description: Thất bại
+//  *       '401':
+//  *         description: Unauthorized
+//  *       '403':
+//  *         description: JWT hết hạn
+//  */
+// router.post('/add', async function (req, res) {
+//     try {
+//         const { name, image, description, category } = req.body;
+//         const obj = await Category.findById(category);
+//         if (obj) {
+//             const itemAdd = { name, image, description, category };
+//             await Product.create(itemAdd);
+//             res.status(200).json({
+//                 status: true,
+//                 message: "Add product successful",
+//                 data: itemAdd
+//             });
+//         } else {
+//             return res.status(400).json({ status: false, message: "Category does not exist" });
+//         }
+//     } catch (err) {
+//         res.status(400).json({ "status": 400, message: "Failed: " + err });
+//     }
+// });
 
 /**
  * @swagger
@@ -215,7 +263,7 @@ router.put('/edit', async function (req, res) {
                     res.status(403).json({ "status": 403, "err": err });
                 } else {
                     const { id, name, image, description } = req.body;
-                    var itemUpdate = await productModel.findById(id);
+                    var itemUpdate = await Product.findById(id);
                     if (itemUpdate) {
                         itemUpdate.name = name ? name : itemUpdate.name;
                         itemUpdate.price = image ? image : itemUpdate.image;
@@ -276,7 +324,7 @@ router.delete('/delete', async function (req, res) {
                     res.status(403).json({ "status": 403, "err": err });
                 } else {
                     const { id } = req.query;
-                    const product = await productModel.findByIdAndDelete(id);
+                    const product = await Product.findByIdAndDelete(id);
                     if (product) {
                         res.status(200).json({
                             status: true,
