@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const sendMail = require('../utils/config-nodemailer');
 const User = require("../models/user");
+const Cart = require("../models/cart");
 const { createResetToken } = require('../utils/auth');
 const JWT = require('jsonwebtoken');
 const config = require("../utils/config-env");
@@ -74,7 +75,7 @@ router.get('/', async function (req, res) {
  *                 description: Mật khẩu của người dùng
  *                 example: password123
  *     responses:
- *       204:
+ *       200:
  *         description: Đăng nhập thành công
  *       400:
  *         description: Thiếu email hoặc mật khẩu
@@ -87,20 +88,32 @@ router.post('/login', async function (req, res) {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
-            return res.status(400).json({ status: false, message: "Email and password are required" });
+            return res.status(400).json({
+                status: false,
+                message: "Email and password are required"
+            });
         }
 
         const checkUser = await User.findOne({ email: email, password: password });
         if (!checkUser) {
-            return res.status(404).json({ status: false, message: "User not found" });
+            return res.status(404).json({
+                status: false,
+                message: "User not found"
+            });
         }
-
-        res.status(204).json({
+        const userCart = await Cart.find({ userId: checkUser._id }).lean();
+        res.status(200).json({
             status: true,
-            message: "Log-in successful"
+            data: {
+                user: checkUser,
+                cart: userCart
+            }
         });
     } catch (error) {
-        res.status(500).json({ status: false, message: "Log-in failed: " + error });
+        res.status(500).json({
+            status: false,
+            message: "Log-in failed: " + error
+        });
     }
 });
 
