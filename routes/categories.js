@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 
-var categoryModel = require("../models/category");
+var Category = require("../models/category");
 var productModel = require("../models/product");
 
 const JWT = require('jsonwebtoken');
@@ -11,38 +11,50 @@ const config = require("../utils/config-env");
  * @swagger
  * /categories:
  *   get:
- *     summary: Lấy danh sách loại sản phẩm
+ *     summary: Get list of categories
  *     tags: 
  *       - Categories
- *     security:
- *       - bearerAuth: []
+ *     description: Retrieve a list of all categories
  *     responses:
  *       '200':
- *         description: Thành công trả về danh sách loại sản phẩm
- *       '400':
- *         description: Thất bại
- *       '401':
- *         description: Không được phép
- *       '403':
- *         description: JWT đã hết hạn
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       // thêm các thuộc tính của đối tượng sản phẩm tại đây
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */
 router.get('/', async function (req, res) {
     try {
-        const token = req.header("Authorization").split(' ')[1];
-        if (token) {
-            JWT.verify(token, config.SECRETKEY, async function (err, id) {
-                if (err) {
-                    res.status(403).json({ "status": 403, "err": err });
-                } else {
-                    var list = await categoryModel.find();
-                    res.status(200).json(list);
-                }
-            });
-        } else {
-            res.status(401).json({ "status": 401, message: "Unauthorized" });
-        }
-    } catch (err) {
-        res.status(400).json({ "status": 400, message: "Failed: " + err });
+        const categories = await Category.find().exec();
+        res.status(200).json({
+            status: true,
+            data: categories,
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: `Failed: ${error.message}`,
+        });
     }
 });
 
@@ -133,7 +145,7 @@ router.post('/add', async function (req, res) {
                 } else {
                     const { name } = req.body;
                     const itemAdd = { name };
-                    await categoryModel.create(itemAdd);
+                    await Category.create(itemAdd);
                     res.status(200).json({
                         status: true,
                         message: "Add category successful",
@@ -190,7 +202,7 @@ router.put('/edit', async function (req, res) {
                     res.status(403).json({ "status": 403, "err": err });
                 } else {
                     const { id, name } = req.body;
-                    var itemUpdate = await categoryModel.findById(id);
+                    var itemUpdate = await Category.findById(id);
                     if (itemUpdate) {
                         itemUpdate.name = name ? name : itemUpdate.name;
                         await itemUpdate.save();
@@ -249,7 +261,7 @@ router.delete('/delete', async function (req, res) {
                     res.status(403).json({ "status": 403, "err": err });
                 } else {
                     const { id } = req.query;
-                    const itemDelete = await categoryModel.findByIdAndDelete(id);
+                    const itemDelete = await Category.findByIdAndDelete(id);
                     if (itemDelete) {
                         res.status(200).json({
                             status: true,
