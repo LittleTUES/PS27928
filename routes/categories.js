@@ -60,11 +60,11 @@ router.get('/', async function (req, res) {
 
 /**
  * @swagger
- * /{categoryId}/products:
+ * /categories/{categoryId}/products:
  *   get:
  *     summary: Get products by category ID
  *     tags: 
- *       - Products
+ *       - Categories
  *     description: Retrieve a list of products based on category ID
  *     parameters:
  *       - in: path
