@@ -64,8 +64,8 @@ router.get('/', async function (req, res) {
  *   get:
  *     summary: Get products by category ID
  *     tags: 
- *       - Products
- *     description: Retrieve a list of products based on category ID
+ *       - Categories
+ *     description: Retrieve a list of products based on category ID, including their sizes and prices
  *     parameters:
  *       - in: path
  *         name: categoryId
@@ -98,6 +98,17 @@ router.get('/', async function (req, res) {
  *                         type: number
  *                       category:
  *                         type: string
+ *                       sizes:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             sizeName:
+ *                               type: string
+ *                             sizeValue:
+ *                               type: string
+ *                             price:
+ *                               type: number
  *       '400':
  *         description: Bad request
  *         content:
@@ -110,18 +121,38 @@ router.get('/', async function (req, res) {
  *                 message:
  *                   type: string
  */
+
 router.get('/:categoryId/products', async function (req, res) {
     try {
         const categoryId = req.params.categoryId;
-        var products = await productModel.find({ cateId: categoryId });
+
+        // Tìm các sản phẩm dựa trên ID danh mục
+        var products = await productModel.find({ category: categoryId }).lean();
+
+        // Tìm các kích thước liên quan đến từng sản phẩm và gộp thông tin
+        const productsWithSizes = await Promise.all(products.map(async (product) => {
+            const productSizes = await ProductSize.find({ productId: product._id }).lean();
+            const sizeIds = productSizes.map(ps => ps.sizeId);
+            const sizes = await Size.find({ _id: { $in: sizeIds } }).lean();
+
+            return {
+                ...product,
+                sizes: sizes.map(size => ({
+                    ...size,
+                    price: size.price // Giả sử bạn có thuộc tính price trong model Size
+                }))
+            };
+        }));
+
         res.status(200).json({
             status: true,
-            data: products
+            data: productsWithSizes
         });
     } catch (err) {
         res.status(400).json({ status: false, message: "Failed: " + err });
     }
 });
+
 
 /**
  * @swagger
