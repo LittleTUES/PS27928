@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var sendMail = require('../utils/config-nodemailer');
-var userModel = require("../models/user");
-
+const sendMail = require('../utils/config-nodemailer');
+const User = require("../models/user");
 const { createResetToken } = require('../utils/auth');
 const JWT = require('jsonwebtoken');
 const config = require("../utils/config-env");
+const { body, validationResult } = require('express-validator');
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -39,7 +39,7 @@ router.get('/', async function (req, res) {
                     res.status(403).json({ "status": 403, "err": err });
                 } else {
                     //xử lý chức năng tương ứng với API
-                    var list = await userModel.find();
+                    var list = await User.find();
                     res.status(200).json(list);
                 }
             });
@@ -67,47 +67,49 @@ router.get('/', async function (req, res) {
  *             properties:
  *               email:
  *                 type: string
- *                 example: example@example.com
+ *                 description: Email của người dùng
+ *                 example: john@example.com
  *               password:
  *                 type: string
- *                 example: example
+ *                 description: Mật khẩu của người dùng
+ *                 example: password123
  *     responses:
- *       200:
+ *       204:
  *         description: Đăng nhập thành công
  *       400:
- *         description: Thất bại
- *       402:
+ *         description: Thiếu email hoặc mật khẩu
+ *       404:
  *         description: Tài khoản không tồn tại
+ *       500:
+ *         description: Lỗi máy chủ
  */
 router.post('/login', async function (req, res) {
     try {
         const { email, password } = req.body;
-        var checkUser = await userModel.findOne({ email: email, password: password });
-        if (checkUser) {
-            const token = JWT.sign({ id: email }, config.SECRETKEY, { expiresIn: '30s' });
-            const refreshToken = JWT.sign({ id: email }, config.SECRETKEY, { expiresIn: '1h' });
-            res.status(200).json({
-                status: true,
-                message: "Log-in successful",
-                token: token,
-                refreshToken: refreshToken
-            });
-        } else {
-            res.status(402).json({
-                status: false,
-                message: "User not found"
-            });
+        if (!email || !password) {
+            return res.status(400).json({ status: false, message: "Email and password are required" });
         }
+
+        const checkUser = await User.findOne({ email: email, password: password });
+        if (!checkUser) {
+            return res.status(404).json({ status: false, message: "User not found" });
+        }
+
+        res.status(204).json({
+            status: true,
+            message: "Log-in successful"
+        });
     } catch (error) {
-        res.status(400).json({ status: false, message: "Log-in failed: " + error });
+        res.status(500).json({ status: false, message: "Log-in failed: " + error });
     }
 });
+
 
 /**
  * @swagger
  * /users/register:
  *   post:
- *     summary: Đăng ký tài khoản
+ *     summary: Đăng ký người dùng mới
  *     tags: 
  *       - Users
  *     requestBody:
@@ -119,31 +121,127 @@ router.post('/login', async function (req, res) {
  *             properties:
  *               name:
  *                 type: string
- *                 example: example
+ *                 description: Tên của người dùng
+ *                 example: johnDoe123
  *               email:
  *                 type: string
- *                 example: example@example.com
+ *                 description: Email của người dùng
+ *                 example: john@example.com
+ *               phone:
+ *                 type: string
+ *                 description: Số điện thoại của người dùng
+ *                 example: "0123456789"
  *               password:
  *                 type: string
- *                 example: example
+ *                 description: Mật khẩu của người dùng
+ *                 example: password123
  *     responses:
- *       200:
+ *       '201':
  *         description: Tạo tài khoản thành công
- *       400:
- *         description: Thất bại
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Create account successful
+ *       '400':
+ *         description: Yêu cầu không hợp lệ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Validation failed
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       type:
+ *                         type: string
+ *                         example: field
+ *                       value:
+ *                         type: string
+ *                         example: johnDoe123
+ *                       msg:
+ *                         type: string
+ *                         example: Invalid email format
+ *                       path:
+ *                         type: string
+ *                         example: email
+ *                       location:
+ *                         type: string
+ *                         example: body
+ *       '409':
+ *         description: Xung đột dữ liệu (email hoặc số điện thoại đã tồn tại)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Email or phone number already exists
+ *       '500':
+ *         description: Lỗi máy chủ nội bộ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Failed: Internal Server Error"
  */
-router.post('/register', async function (req, res) {
+router.post('/register', [
+    body('name').notEmpty().withMessage('Name is required').isAlphanumeric().withMessage('Name must not contain special characters'),
+    body('email').notEmpty().withMessage('Email is required').isEmail().withMessage('Invalid email format'),
+    body('phone').notEmpty().withMessage('Phone is required').isNumeric().withMessage('Phone must contain only numbers').isLength({ min: 10, max: 10 }).withMessage('Phone must be exactly 10 digits'),
+    body('password').notEmpty().withMessage('Password is required')
+], async function (req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ status: false, message: 'Validation failed', errors: errors.array() });
+    }
+
     try {
-        const { name, email, password } = req.body;
-        const account = { name, email, password };
-        await userModel.create(account);
-        res.status(200).json({
+        const { name, email, phone, password } = req.body;
+
+        const existingUser = await User.findOne({ $or: [{ email: email }, { phone: phone }] });
+        if (existingUser) {
+            return res.status(409).json({
+                status: false,
+                message: 'Email or phone number already exists'
+            });
+        }
+
+        const account = { name, email, phone, password };
+        await User.create(account);
+        res.status(201).json({
             status: true,
             message: "Create account successful",
-            data: account
         });
     } catch (err) {
-        res.status(400).json({ "status": 400, message: "Failed: " + err });
+        res.status(500).json({
+            status: false,
+            message: "Failed: " + err
+        });
     }
 });
 
@@ -174,7 +272,7 @@ router.post('/login/forgot-password', async (req, res) => {
     const { email } = req.body;
 
     // Kiểm tra xem email có tồn tại không
-    const user = await userModel.findOne({ email });
+    const user = await User.findOne({ email });
     if (user) {
         // Tạo token đặt lại mật khẩu
         const resetToken = createResetToken(user._id);
@@ -221,7 +319,7 @@ router.post('/login/reset-password', async (req, res) => {
     try {
         // Xác minh token
         const decoded = JWT.verify(token, config.SECRETKEY);
-        const user = await userModel.findOne({ _id: decoded.id, resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
+        const user = await User.findOne({ _id: decoded.id, resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
         if (user) {
             // Cập nhật mật khẩu
             user.password = newPassword;
