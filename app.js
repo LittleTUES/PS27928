@@ -13,11 +13,14 @@ require('./models/category');
 require('./models/product');
 require('./models/bill');
 require('./models/billDetail');
+require('./models/size');
+require('./models/productSize');
+require('./models/cart');
 
 var indexRouter = require('./routes/index');
-// var usersRouter = require('./routes/users');
-// var categoriesRouter = require('./routes/categories');
-// var productsRouter = require('./routes/products');
+var usersRouter = require('./routes/users');
+var categoriesRouter = require('./routes/categories');
+var productsRouter = require('./routes/products');
 // var sizesRouter = require('./routes/sizes');
 
 var app = express();
@@ -38,15 +41,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //connect database
 mongoose.connect('mongodb+srv://tientqps27928:tqtienps27928@and103.mora3.mongodb.net/assignment')
+// mongoose.connect('mongodb://localhost:27017/assignment')
   .then(() => console.log('>>>>>>>>>> DB Connected!!!!!!'))
   .catch(err => console.log('>>>>>>>>> DB Error: ', err));
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/', indexRouter);
-// app.use('/users', usersRouter);
-// app.use('/categories', categoriesRouter);
-// app.use('/products', productsRouter);
+app.use('/users', usersRouter);
+app.use('/categories', categoriesRouter);
+app.use('/products', productsRouter);
 // app.use('/sizes', sizesRouter);
 
 // catch 404 and forward to error handler
