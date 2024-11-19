@@ -21,6 +21,9 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var categoriesRouter = require('./routes/categories');
 var productsRouter = require('./routes/products');
+
+var successRouter = require('./routes/success'); 
+var cancelRouter = require('./routes/cancel'); 
 // var sizesRouter = require('./routes/sizes');
 
 var app = express();
@@ -40,17 +43,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //connect database
-mongoose.connect('mongodb+srv://tientqps27928:tqtienps27928@and103.mora3.mongodb.net/assignment')
-// mongoose.connect('mongodb://localhost:27017/assignment')
+// mongoose.connect('mongodb+srv://tientqps27928:tqtienps27928@and103.mora3.mongodb.net/assignment')
+mongoose.connect('mongodb://localhost:27017/assignment')
   .then(() => console.log('>>>>>>>>>> DB Connected!!!!!!'))
   .catch(err => console.log('>>>>>>>>> DB Error: ', err));
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/', indexRouter);
+app.use('/success', successRouter);
+app.use('/cancel', cancelRouter);
 app.use('/users', usersRouter);
 app.use('/categories', categoriesRouter);
 app.use('/products', productsRouter);
+
+
 // app.use('/sizes', sizesRouter);
 
 // catch 404 and forward to error handler
