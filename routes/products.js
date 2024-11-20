@@ -23,7 +23,7 @@ const config = require("../utils/config-env");
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
  *                 data:
  *                   type: array

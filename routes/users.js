@@ -413,4 +413,65 @@ router.post('/login/reset-password', async (req, res) => {
 });
 
 
+
+/**
+ * @swagger
+ * /users/carts/add:
+ *   post:
+ *     summary: Add new cart
+ *     tags: 
+ *       - Cart
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: ID người dùng
+ *               productId:
+ *                 type: string
+ *                 description: ID sản phẩm
+ *               quantity:
+ *                 type: string
+ *                 description: Số lượng
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ */
+router.post('/carts/add', async function (req, res) {
+    try {
+        const { userId, productId, quantity } = req.body;
+        const cart = { userId, productId, quantity };
+        await Cart.create(cart);
+        res.status(204).json({
+            status: true,
+            message: "Success Add to Cart",
+        });
+
+    } catch (err) {
+        res.status(400).json({ status: 400, message: "Failed: " + err });
+    }
+});
+
 module.exports = router;

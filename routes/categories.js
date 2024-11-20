@@ -23,7 +23,7 @@ const config = require("../utils/config-env");
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
  *                 data:
  *                   type: array
@@ -59,8 +59,9 @@ const config = require("../utils/config-env");
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
+ *                   example: false
  *                 message:
  *                   type: string
  */
