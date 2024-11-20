@@ -4,8 +4,6 @@ const ObjectId = Schema.ObjectId;
 const product = new Schema({
     id: { type: ObjectId }, // khóa chính
     name: { type: String, required: true },
-    description: { type: String },
-    image: { type: [String] },
     subcategory: {
         type: String,
         enum: ['Ưa sáng', 'Ưa bóng'],
@@ -14,6 +12,11 @@ const product = new Schema({
         },
         default: null,
     },
+    size: { type: String },
+    price: { type: Number },
+    stock: { type: Number },
+    description: { type: String },
+    images: { type: [String] },
     createdAt: { type: Date, default: () => new Date().toISOString().split('T')[0] },
     cateId: {
         type: ObjectId,

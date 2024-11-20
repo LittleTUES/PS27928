@@ -3,8 +3,6 @@ var router = express.Router();
 
 var Product = require("../models/product");
 var Category = require("../models/category");
-var Size = require("../models/size");
-var ProductSize = require("../models/productSize");
 
 const JWT = require('jsonwebtoken');
 const config = require("../utils/config-env");
@@ -15,7 +13,7 @@ const config = require("../utils/config-env");
  *   get:
  *     summary: Get list of products
  *     tags: 
- *       - Products
+ *       - Product
  *     description: Retrieve a list of all products
  *     responses:
  *       '200':
@@ -32,7 +30,28 @@ const config = require("../utils/config-env");
  *                   items:
  *                     type: object
  *                     properties:
- *                       // thêm các thuộc tính của đối tượng sản phẩm tại đây
+ *                       _id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       subcategory:
+ *                         type: string
+ *                       size:
+ *                         type: string
+ *                       price:
+ *                         type: number
+ *                       stock:
+ *                         type: number
+ *                       description:
+ *                         type: string
+ *                       images:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                       createdAt:
+ *                         type: string
+ *                       cateId:
+ *                         type: string
  *       '500':
  *         description: Server error
  *         content:
@@ -40,8 +59,9 @@ const config = require("../utils/config-env");
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
+ *                   example: false
  *                 message:
  *                   type: string
  */
@@ -62,15 +82,15 @@ router.get('/', async function (req, res) {
 
 /**
  * @swagger
- * /products/product-detail/{productId}:
+ * /products/product-detail:
  *   get:
  *     summary: Get product details by product ID
  *     tags: 
- *       - Products
+ *       - Product
  *     description: Retrieve detailed information about a product, including its sizes
  *     parameters:
- *       - in: path
- *         name: productId
+ *       - in: query
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
@@ -88,25 +108,28 @@ router.get('/', async function (req, res) {
  *                 data:
  *                   type: object
  *                   properties:
+ *                     id:
+ *                       type: string
  *                     name:
  *                       type: string
- *                     description:
- *                       type: string
- *                     image:
- *                       type: array
- *                     sizes:
- *                       type: array
- *                     stocks:
- *                       type: number
  *                     subcategory:
  *                       type: string
+ *                     size:
+ *                       type: string
+ *                     price:
+ *                       type: number
+ *                     stock:
+ *                       type: number
+ *                     description:
+ *                       type: string
+ *                     images:
+ *                       type: array
  *                       items:
- *                         type: object
- *                         properties:
- *                           sizeName:
- *                             type: string
- *                           sizeValue:
- *                             type: string
+ *                         type: string
+ *                     createdAt:
+ *                       type: string
+ *                     cateId:
+ *                       type: string
  *       '404':
  *         description: Product not found
  *         content:
@@ -114,6 +137,9 @@ router.get('/', async function (req, res) {
  *             schema:
  *               type: object
  *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
  *                 message:
  *                   type: string
  *       '500':
@@ -125,36 +151,25 @@ router.get('/', async function (req, res) {
  *               properties:
  *                 status:
  *                   type: boolean
+ *                   example: false
  *                 message:
  *                   type: string
  */
-router.get('/product-detail/:productId', async (req, res) => {
+router.get('/product-detail', async (req, res) => {
     try {
-        const productId = req.params.productId;
+        const productId = req.query.id;
 
-        // Tìm sản phẩm bằng id
+        if (!productId) {
+            return res.status(400).json({ status: false, message: "Product ID is required" });
+        }
         const product = await Product.findById(productId).lean();
-
         if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
+            return res.status(404).json({ status: false, message: 'Product not found' });
         }
 
-        // Tìm các kích thước liên quan đến sản phẩm
-        const productSizes = await ProductSize.find({ productId: productId }).lean();
-
-        const sizeIds = productSizes.map(ps => ps.sizeId);
-
-        const sizes = await Size.find({ _id: { $in: sizeIds } }).lean();
-
-        // Gộp sản phẩm và kích thước
-        const productDetail = {
-            ...product,
-            sizes: sizes
-        };
-
-        res.status(200).json({ status: true, data: productDetail });
+        res.status(200).json({ status: true, data: product });
     } catch (error) {
-        res.status(500).json({ status: false, message: "Failed: " + err });
+        res.status(500).json({ status: false, message: "Failed: " + error });
     }
 });
 
@@ -222,7 +237,7 @@ router.get('/product-detail/:productId', async (req, res) => {
  *   put:
  *     summary: Thay đổi thông tin sản phẩm
  *     tags: 
- *       - Products
+ *       - Product
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -293,7 +308,7 @@ router.put('/edit', async function (req, res) {
  *   delete:
  *     summary: Xóa sản phẩm
  *     tags: 
- *       - Products
+ *       - Product
  *     security:
  *       - bearerAuth: []
  *     parameters:

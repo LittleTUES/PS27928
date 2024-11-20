@@ -3,8 +3,6 @@ var router = express.Router();
 
 var Category = require("../models/category");
 var Product = require("../models/product");
-var ProductSize = require("../models/productSize");
-var Size = require("../models/size");
 
 const JWT = require('jsonwebtoken');
 const config = require("../utils/config-env");
@@ -15,7 +13,7 @@ const config = require("../utils/config-env");
  *   get:
  *     summary: Get list of categories
  *     tags: 
- *       - Categories
+ *       - Category
  *     description: Retrieve a list of all categories
  *     responses:
  *       '200':
@@ -32,7 +30,28 @@ const config = require("../utils/config-env");
  *                   items:
  *                     type: object
  *                     properties:
- *                       // thêm các thuộc tính của đối tượng sản phẩm tại đây
+ *                       _id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       subcategory:
+ *                         type: string
+ *                       size:
+ *                         type: string
+ *                       price:
+ *                         type: number
+ *                       stock:
+ *                         type: number
+ *                       description:
+ *                         type: string
+ *                       images:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                       createdAt:
+ *                         type: string
+ *                       cateId:
+ *                         type: string
  *       '500':
  *         description: Server error
  *         content:
@@ -62,15 +81,15 @@ router.get('/', async function (req, res) {
 
 /**
  * @swagger
- * /categories/{categoryId}/products:
+ * /categories/products:
  *   get:
  *     summary: Get products by category ID
  *     tags: 
- *       - Categories
- *     description: Retrieve a list of products based on category ID, including their sizes and prices
+ *       - Category
+ *     description: Retrieve a list of products based on category ID
  *     parameters:
- *       - in: path
- *         name: categoryId
+ *       - in: query
+ *         name: cateId
  *         required: true
  *         schema:
  *           type: string
@@ -94,23 +113,24 @@ router.get('/', async function (req, res) {
  *                         type: string
  *                       name:
  *                         type: string
- *                       description:
+ *                       subcategory:
+ *                         type: string
+ *                       size:
  *                         type: string
  *                       price:
  *                         type: number
- *                       category:
+ *                       stock:
+ *                         type: number
+ *                       description:
  *                         type: string
- *                       sizes:
+ *                       images:
  *                         type: array
  *                         items:
- *                           type: object
- *                           properties:
- *                             sizeName:
- *                               type: string
- *                             sizeValue:
- *                               type: string
- *                             price:
- *                               type: number
+ *                           type: string
+ *                       createdAt:
+ *                         type: string
+ *                       cateId:
+ *                         type: string
  *       '400':
  *         description: Bad request
  *         content:
@@ -120,37 +140,38 @@ router.get('/', async function (req, res) {
  *               properties:
  *                 status:
  *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
  *                 message:
  *                   type: string
  */
-router.get('/:categoryId/products', async function (req, res) {
+router.get('/products', async function (req, res) {
     try {
-        const categoryId = req.params.categoryId;
-
-        // Tìm các sản phẩm dựa trên ID danh mục
-        var products = await Product.find({ cateId: categoryId }).lean();
-
-        // Tìm các kích thước liên quan đến từng sản phẩm và gộp thông tin
-        const productsWithSizes = await Promise.all(products.map(async (product) => {
-            const productSizes = await ProductSize.find({ productId: product._id }).lean();
-            const sizeIds = productSizes.map(ps => ps.sizeId);
-            const sizes = await Size.find({ _id: { $in: sizeIds } }).lean();
-
-            return {
-                ...product,
-                sizes: sizes.map(size => ({
-                    ...size,
-                    price: size.price // Giả sử bạn có thuộc tính price trong model Size
-                }))
-            };
-        }));
-
+        const category = req.query.cateId;
+        if (!category) {
+            return res.status(400).json({ status: false, message: "Product ID is required" });
+        }
+        const products = await Product.find({ cateId: category }).exec();
         res.status(200).json({
             status: true,
-            data: productsWithSizes
+            data: products,
         });
-    } catch (err) {
-        res.status(400).json({ status: false, message: "Failed: " + err });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: `Failed: ${error.message}`,
+        });
     }
 });
 
@@ -164,7 +185,7 @@ router.get('/:categoryId/products', async function (req, res) {
  *   post:
  *     summary: Thêm loại sản phẩm mới
  *     tags: 
- *       - Categories
+ *       - Category
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -219,7 +240,7 @@ router.post('/add', async function (req, res) {
  *   put:
  *     summary: Thay đổi thông tin loại sản phẩm
  *     tags: 
- *       - Categories
+ *       - Category
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -282,7 +303,7 @@ router.put('/edit', async function (req, res) {
  *   delete:
  *     summary: Xóa loại sản phẩm
  *     tags: 
- *       - Categories
+ *       - Category
  *     security:
  *       - bearerAuth: []
  *     parameters:

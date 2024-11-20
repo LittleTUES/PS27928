@@ -13,8 +13,6 @@ require('./models/category');
 require('./models/product');
 require('./models/bill');
 require('./models/billDetail');
-require('./models/size');
-require('./models/productSize');
 require('./models/cart');
 
 var indexRouter = require('./routes/index');

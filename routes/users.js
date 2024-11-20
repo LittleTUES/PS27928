@@ -18,7 +18,7 @@ const { body, validationResult } = require('express-validator');
  *   get:
  *     summary: Lấy danh sách tài khoản
  *     tags: 
- *       - Users
+ *       - User
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -33,32 +33,33 @@ const { body, validationResult } = require('express-validator');
  */
 router.get('/', async function (req, res) {
     try {
-        const token = req.header("Authorization").split(' ')[1];
-        if (token) {
-            JWT.verify(token, config.SECRETKEY, async function (err, id) {
-                if (err) {
-                    res.status(403).json({ "status": 403, "err": err });
-                } else {
-                    //xử lý chức năng tương ứng với API
-                    var list = await User.find();
-                    res.status(200).json(list);
-                }
-            });
-        } else {
-            res.status(401).json({ "status": 401, message: "Unauthorized" });
-        }
-    } catch (err) {
-        res.status(400).json({ "status": 400, message: "Failed" });
+        // const token = req.header("Authorization").split(' ')[1];
+        // if (token) {
+        //     JWT.verify(token, config.SECRETKEY, async function (err, id) {
+        //         if (err) {
+        //             res.status(403).json({ "status": 403, "err": err });
+        //         } else {
+        //xử lý chức năng tương ứng với API
+        const users = await User.find().exec();
+        res.status(200).json({ status: true, data: users });
+        //     }
+        // });
+        // } else {
+        //     res.status(401).json({ "status": 401, message: "Unauthorized" });
+        // }
+    } catch (error) {
+        res.status(500).json({ status: false, message: error });
     }
 });
 
 /**
  * @swagger
- * /users/login/:
+ * /users/login:
  *   post:
- *     summary: Đăng nhập tài khoản
+ *     summary: User login
  *     tags: 
- *       - Users
+ *       - User
+ *     description: User login with email and password, returning user data and their cart
  *     requestBody:
  *       required: true
  *       content:
@@ -68,21 +69,83 @@ router.get('/', async function (req, res) {
  *             properties:
  *               email:
  *                 type: string
- *                 description: Email của người dùng
  *                 example: john@example.com
  *               password:
  *                 type: string
- *                 description: Mật khẩu của người dùng
  *                 example: password123
  *     responses:
- *       200:
- *         description: Đăng nhập thành công
- *       400:
- *         description: Thiếu email hoặc mật khẩu
- *       404:
- *         description: Tài khoản không tồn tại
- *       500:
- *         description: Lỗi máy chủ
+ *       '200':
+ *         description: Log-in successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                         name:
+ *                           type: string
+ *                         email:
+ *                           type: string
+ *                         phone:
+ *                           type: string
+ *                         address:
+ *                           type: string
+ *                     cart:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           userId:
+ *                             type: string
+ *                           productId:
+ *                             type: string
+ *                           quantity:
+ *                             type: number
+ *       '400':
+ *         description: Email and password are required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *       '404':
+ *         description: User not found
+ *         content:     
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *       '500':
+ *         description: Log-in failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
  */
 router.post('/login', async function (req, res) {
     try {
@@ -124,7 +187,7 @@ router.post('/login', async function (req, res) {
  *   post:
  *     summary: Đăng ký người dùng mới
  *     tags: 
- *       - Users
+ *       - User
  *     requestBody:
  *       required: true
  *       content:
@@ -264,7 +327,7 @@ router.post('/register', [
  *   post:
  *     summary: Yêu cầu đặt lại mật khẩu
  *     tags: 
- *       - Users
+ *       - User
  *     requestBody:
  *       required: true
  *       content:
@@ -307,7 +370,7 @@ router.post('/login/forgot-password', async (req, res) => {
  *   post:
  *     summary: Đặt lại mật khẩu
  *     tags: 
- *       - Users
+ *       - User
  *     requestBody:
  *       required: true
  *       content:
