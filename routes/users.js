@@ -438,6 +438,7 @@ router.post('/login/reset-password', async (req, res) => {
  *               quantity:
  *                 type: number
  *                 description: Số lượng
+ *                 example: 1
  *     responses:
  *       '200':
  *         description: Successful operation
@@ -448,6 +449,15 @@ router.post('/login/reset-password', async (req, res) => {
  *               properties:
  *                 status:
  *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: string
+ *                     productId:
+ *                       type: string
+ *                     quantity:
+ *                       type: number
  *       '500':
  *         description: Server error
  *         content:
@@ -486,9 +496,9 @@ router.post('/carts/add', async function (req, res) {
         }
         const cart = { userId, productId, quantity };
         await Cart.create(cart);
-        res.status(204).json({
+        res.status(200).json({
             status: true,
-            message: "Success Add to Cart",
+            data: cart,
         });
 
     } catch (err) {
