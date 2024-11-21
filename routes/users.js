@@ -3,6 +3,7 @@ var router = express.Router();
 const sendMail = require('../utils/config-nodemailer');
 const User = require("../models/user");
 const Cart = require("../models/cart");
+const Product = require("../models/product");
 const { createResetToken } = require('../utils/auth');
 const JWT = require('jsonwebtoken');
 const config = require("../utils/config-env");
@@ -435,7 +436,7 @@ router.post('/login/reset-password', async (req, res) => {
  *                 type: string
  *                 description: ID sản phẩm
  *               quantity:
- *                 type: string
+ *                 type: number
  *                 description: Số lượng
  *     responses:
  *       '200':
@@ -462,6 +463,27 @@ router.post('/login/reset-password', async (req, res) => {
 router.post('/carts/add', async function (req, res) {
     try {
         const { userId, productId, quantity } = req.body;
+
+        const user = await User.findById({ _id: userId });
+        if (!user) {
+            return res.status(404).json({
+                status: false,
+                message: "User not exist"
+            });
+        }
+        const product = await Product.findById({ _id: productId });
+        if (!product) {
+            return res.status(404).json({
+                status: false,
+                message: "Product not exist"
+            });
+        }
+        if (quantity < 1) {
+            return res.status(404).json({
+                status: false,
+                message: "The quantity must be greater than 0"
+            });
+        }
         const cart = { userId, productId, quantity };
         await Cart.create(cart);
         res.status(204).json({
@@ -470,7 +492,7 @@ router.post('/carts/add', async function (req, res) {
         });
 
     } catch (err) {
-        res.status(400).json({ status: 400, message: "Failed: " + err });
+        res.status(500).json({ status: false, message: "Failed: " + err });
     }
 });
 
