@@ -417,9 +417,9 @@ router.post('/login/reset-password', async (req, res) => {
 
 /**
  * @swagger
- * /users/carts/add:
+ * /carts/add:
  *   post:
- *     summary: Add new cart
+ *     summary: Add or update cart
  *     tags: 
  *       - Cart
  *     requestBody:
@@ -458,6 +458,30 @@ router.post('/login/reset-password', async (req, res) => {
  *                       type: string
  *                     quantity:
  *                       type: number
+ *       '400':
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *       '404':
+ *         description: Not found error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
  *       '500':
  *         description: Server error
  *         content:
@@ -467,6 +491,7 @@ router.post('/login/reset-password', async (req, res) => {
  *               properties:
  *                 status:
  *                   type: boolean
+ *                   example: false
  *                 message:
  *                   type: string
  */
@@ -474,36 +499,52 @@ router.post('/carts/add', async function (req, res) {
     try {
         const { userId, productId, quantity } = req.body;
 
-        const user = await User.findById({ _id: userId });
+        // Kiểm tra xem người dùng có tồn tại không
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({
                 status: false,
                 message: "User not exist"
             });
         }
-        const product = await Product.findById({ _id: productId });
+
+        // Kiểm tra xem sản phẩm có tồn tại không
+        const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({
                 status: false,
                 message: "Product not exist"
             });
         }
+
+        // Kiểm tra số lượng hợp lệ
         if (quantity < 1) {
-            return res.status(404).json({
+            return res.status(400).json({
                 status: false,
                 message: "The quantity must be greater than 0"
             });
         }
-        const cart = { userId, productId, quantity };
-        await Cart.create(cart);
+
+        // Kiểm tra xem mục giỏ hàng đã tồn tại chưa
+        let cart = await Cart.findOne({ userId, productId });
+        if (cart) {
+            // Nếu tồn tại, cập nhật số lượng
+            cart.quantity += quantity;
+            await cart.save();
+        } else {
+            // Nếu không tồn tại, tạo mục giỏ hàng mới
+            cart = new Cart({ userId, productId, quantity });
+            await cart.save();
+        }
+
         res.status(200).json({
             status: true,
             data: cart,
         });
-
     } catch (err) {
-        res.status(500).json({ status: false, message: "Failed: " + err });
+        res.status(500).json({ status: false, message: "Failed: " + err.message });
     }
 });
+
 
 module.exports = router;
