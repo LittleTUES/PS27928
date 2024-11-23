@@ -302,7 +302,7 @@ router.post('/register', [
 
         const existingUser = await User.findOne({ $or: [{ email: email }, { phone: phone }] });
         if (existingUser) {
-            return res.status(409).json({
+            res.status(409).json({
                 status: false,
                 message: 'Email or phone number already exists'
             });
