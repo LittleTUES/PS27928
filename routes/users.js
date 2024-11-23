@@ -162,7 +162,7 @@ router.post('/login', async function (req, res) {
         if (!checkUser) {
             return res.status(404).json({
                 status: false,
-                message: "User not found"
+                message: "Invalid email or Password . Try Again !"
             });
         }
         const userCart = await Cart.find({ userId: checkUser._id }).lean();
