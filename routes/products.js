@@ -271,8 +271,9 @@ router.get('/product-detail', async (req, res) => {
 router.get('/recent-products', async (req, res) => {
     try {
         const cateId = req.query.cateId;
-        const oneMonthAgo = new Date();
-        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        const threeMonthAgo = new Date();
+        threeMonthAgo.setMonth(threeMonthAgo.getMonth() - 3);
+        const threeMonthAgoISO = threeMonthAgo.toISOString().split('T')[0];
         if (cateId) {
             const category = await Category.findById(cateId);
             if (!category) {
@@ -281,10 +282,10 @@ router.get('/recent-products', async (req, res) => {
         }
         const recentProducts = cateId ?
             await Product.find({
-                createdAt: { $gte: oneMonthAgo }, cateId: cateId
+                createdAt: { $gte: threeMonthAgoISO }, cateId: cateId
             }) :
             await Product.find({
-                createdAt: { $gte: oneMonthAgo }
+                createdAt: { $gte: threeMonthAgoISO }
             });
 
         res.status(200).json({ status: true, data: recentProducts });
