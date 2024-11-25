@@ -82,11 +82,11 @@ router.get('/', async function (req, res) {
 
 /**
  * @swagger
- * /products:
+ * /categories/products:
  *   get:
  *     summary: Get products by category ID or name
  *     tags: 
- *       - Product
+ *       - Products
  *     description: Retrieve a list of products based on category ID or category name
  *     parameters:
  *       - in: query
