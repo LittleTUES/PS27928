@@ -130,6 +130,8 @@ router.get('/', async function (req, res) {
  *                       type: string
  *                     cateId:
  *                       type: string
+ *                     cateName:
+ *                       type: string
  *       '404':
  *         description: Product not found
  *         content:
@@ -158,7 +160,6 @@ router.get('/', async function (req, res) {
 router.get('/product-detail', async (req, res) => {
     try {
         const productId = req.query.id;
-
         if (!productId) {
             return res.status(400).json({ status: false, message: "Product ID is required" });
         }
@@ -166,8 +167,9 @@ router.get('/product-detail', async (req, res) => {
         if (!product) {
             return res.status(404).json({ status: false, message: 'Product not found' });
         }
+        const cateName = await Category.findById(product.cateId);
 
-        res.status(200).json({ status: true, data: product });
+        res.status(200).json({ status: true, data: { ...product, cateName } });
     } catch (error) {
         res.status(500).json({ status: false, message: "Failed: " + error });
     }
