@@ -167,7 +167,7 @@ router.get('/product-detail', async (req, res) => {
         if (!product) {
             return res.status(404).json({ status: false, message: 'Product not found' });
         }
-        const cateName = await Category.findById(product.cateId);
+        const cateName = await Category.findById(product.cateId).name;
 
         res.status(200).json({ status: true, data: { ...product, cateName } });
     } catch (error) {
