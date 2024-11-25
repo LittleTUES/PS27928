@@ -17,7 +17,14 @@ const product = new Schema({
     stock: { type: Number },
     description: { type: String },
     images: { type: [String] },
-    createdAt: { type: Date, default: () => new Date().toISOString().split('T')[0] },
+    createdAt: {
+        type: Date,
+        default: () => {
+            const date = new Date();
+            date.setUTCHours(0, 0, 0, 0); // Đặt giờ là 00:00:00.000+00:00
+            return date.toISOString(); // Trả về chuỗi với định dạng mong muốn
+        }
+    },
     cateId: {
         type: ObjectId,
         ref: 'category'

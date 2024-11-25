@@ -273,26 +273,30 @@ router.get('/recent-products', async (req, res) => {
         const cateId = req.query.cateId;
         const threeMonthAgo = new Date();
         threeMonthAgo.setMonth(threeMonthAgo.getMonth() - 3);
-        const threeMonthAgoISO = threeMonthAgo.toISOString().split('T')[0];
+        console.log('threeMonthAgo', threeMonthAgo);
+
+        let recentProducts;
+
         if (cateId) {
             const category = await Category.findById(cateId);
             if (!category) {
                 return res.status(404).json({ status: false, message: "Category not found" });
             }
-        }
-        const recentProducts = cateId ?
-            await Product.find({
-                createdAt: { $gte: threeMonthAgoISO }, cateId: cateId
-            }) :
-            await Product.find({
-                createdAt: { $gte: threeMonthAgoISO }
-            });
 
+            recentProducts = await Product.find({
+                createdAt: { $gte: threeMonthAgo }, cateId: cateId
+            });
+        } else {
+            recentProducts = await Product.find({
+                createdAt: { $gte: threeMonthAgo }
+            });
+        }
         res.status(200).json({ status: true, data: recentProducts });
     } catch (error) {
         res.status(500).json({ status: false, message: "Failed: " + error });
     }
 });
+
 
 // /**
 //  * @swagger
