@@ -82,19 +82,23 @@ router.get('/', async function (req, res) {
 
 /**
  * @swagger
- * /categories/products:
+ * /products:
  *   get:
- *     summary: Get products by category ID
+ *     summary: Get products by category ID or name
  *     tags: 
- *       - Category
- *     description: Retrieve a list of products based on category ID
+ *       - Product
+ *     description: Retrieve a list of products based on category ID or category name
  *     parameters:
  *       - in: query
  *         name: cateId
- *         required: true
  *         schema:
  *           type: string
  *         description: ID of the category
+ *       - in: query
+ *         name: cateName
+ *         schema:
+ *           type: string
+ *         description: Name of the category
  *     responses:
  *       '200':
  *         description: Successful operation
@@ -144,6 +148,20 @@ router.get('/', async function (req, res) {
  *                   example: false
  *                 message:
  *                   type: string
+ *                   example: Category ID or Name is required
+ *       '404':
+ *         description: Category not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Category not found
  *       '500':
  *         description: Server error
  *         content:
@@ -156,14 +174,34 @@ router.get('/', async function (req, res) {
  *                   example: false
  *                 message:
  *                   type: string
+ *                   example: Internal server error
  */
 router.get('/products', async function (req, res) {
     try {
-        const category = req.query.cateId;
-        if (!category) {
-            return res.status(400).json({ status: false, message: "Product ID is required" });
+        const { cateId, cateName } = req.query;
+
+        // Kiểm tra nếu không có cả cateId và cateName
+        if (!cateId && !cateName) {
+            return res.status(400).json({ status: false, message: "Category ID or Name is required" });
         }
-        const products = await Product.find({ cateId: category }).exec();
+        let products;
+        // Tìm sản phẩm theo cateId
+        if (cateId) {
+            const categoryExists = await Category.exists({ _id: cateId });
+            if (!categoryExists) {
+                return res.status(404).json({ status: false, message: "Category not found" });
+            }
+            products = await Product.find({ cateId }).exec();
+        }
+        // Tìm sản phẩm theo cateName
+        else if (cateName) {
+            const category = await Category.findOne({ name: cateName }).exec();
+            if (!category) {
+                return res.status(404).json({ status: false, message: "Category not found" });
+            }
+            products = await Product.find({ cateId: category._id }).exec();
+        }
+
         res.status(200).json({
             status: true,
             data: products,
@@ -175,9 +213,6 @@ router.get('/products', async function (req, res) {
         });
     }
 });
-
-
-
 
 
 /**
