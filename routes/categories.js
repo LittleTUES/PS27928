@@ -34,24 +34,6 @@ const config = require("../utils/config-env");
  *                         type: string
  *                       name:
  *                         type: string
- *                       subcategory:
- *                         type: string
- *                       size:
- *                         type: string
- *                       price:
- *                         type: number
- *                       stock:
- *                         type: number
- *                       description:
- *                         type: string
- *                       images:
- *                         type: array
- *                         items:
- *                           type: string
- *                       createdAt:
- *                         type: string
- *                       cateId:
- *                         type: string
  *       '500':
  *         description: Server error
  *         content:
@@ -86,7 +68,7 @@ router.get('/', async function (req, res) {
  *   get:
  *     summary: Get products by category ID or name
  *     tags: 
- *       - Products
+ *       - Product
  *     description: Retrieve a list of products based on category ID or category name
  *     parameters:
  *       - in: query
