@@ -76,11 +76,6 @@ router.get('/', async function (req, res) {
  *         schema:
  *           type: string
  *         description: ID of the category
- *       - in: query
- *         name: cateName
- *         schema:
- *           type: string
- *         description: Name of the category
  *     responses:
  *       '200':
  *         description: Successful operation
@@ -160,29 +155,17 @@ router.get('/', async function (req, res) {
  */
 router.get('/products', async function (req, res) {
     try {
-        const { cateId, cateName } = req.query;
+        const cateId = req.query.cateId;
 
         // Kiểm tra nếu không có cả cateId và cateName
-        if (!cateId && !cateName) {
+        if (!cateId) {
             return res.status(400).json({ status: false, message: "Category ID or Name is required" });
         }
-        let products;
-        // Tìm sản phẩm theo cateId
-        if (cateId) {
-            const categoryExists = await Category.exists({ _id: cateId });
-            if (!categoryExists) {
-                return res.status(404).json({ status: false, message: "Category not found" });
-            }
-            products = await Product.find({ cateId }).exec();
+        const categoryExists = await Category.exists({ _id: cateId });
+        if (!categoryExists) {
+            return res.status(404).json({ status: false, message: "Category not found" });
         }
-        // Tìm sản phẩm theo cateName
-        else if (cateName) {
-            const category = await Category.findOne({ name: cateName }).exec();
-            if (!category) {
-                return res.status(404).json({ status: false, message: "Category not found" });
-            }
-            products = await Product.find({ cateId: category._id }).exec();
-        }
+        const products = await Product.find({ cateId: cateId }).exec();
 
         res.status(200).json({
             status: true,
