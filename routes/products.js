@@ -174,6 +174,124 @@ router.get('/product-detail', async (req, res) => {
         res.status(500).json({ status: false, message: "Failed: " + error });
     }
 });
+/**
+ * @swagger
+ *   /products/recent-products:
+ *     get:
+ *       summary: Get recent products
+ *     tags: 
+ *       - Product
+ *       description: Get products created within the last month, optionally filtered by category ID.
+ *       parameters:
+ *         - in: query
+ *           name: cateId
+ *           schema:
+ *             type: string
+ *           description: The ID of the category to filter products by.
+ *       responses:
+ *         '200':
+ *           description: A list of recent products
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   status:
+ *                     type: boolean
+ *                   data:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         _id:
+ *                           type: string
+ *                         name:
+ *                           type: string
+ *                         subcategory:
+ *                           type: string
+ *                         size:
+ *                           type: string
+ *                         price:
+ *                           type: number
+ *                         stock:
+ *                           type: number
+ *                           description: The stock of the product
+ *                           example: 20
+ *                         description:
+ *                           type: string
+ *                         images:
+ *                           type: array
+ *                           items:
+ *                             type: string
+ *                         createdAt:
+ *                           type: string
+ *                           format: date-time
+ *                         cateId:
+ *                           type: string
+ *         '400':
+ *           description: Bad request
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   status:
+ *                     type: boolean
+ *                     example: false
+ *                   message:
+ *                     type: string
+ *                     example: CateId is required
+ *         '404':
+ *           description: Not found
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   status:
+ *                     type: boolean
+ *                     example: false
+ *                   message:
+ *                     type: string
+ *                     example: Category not found
+ *         '500':
+ *           description: Internal server error
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   status:
+ *                     type: boolean
+ *                     example: false
+ *                   message:
+ *                     type: string
+ *                     example: Failed: Internal server error
+ */
+router.get('/recent-products', async (req, res) => {
+    try {
+        const cateId = req.query.cateId;
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        if (cateId) {
+            const category = await Category.findById(cateId);
+            if (!category) {
+                return res.status(404).json({ status: false, message: "Category not found" });
+            }
+        }
+        const recentProducts = cateId ?
+            await Product.find({
+                createdAt: { $gte: oneMonthAgo }, cateId: cateId
+            }) :
+            await Product.find({
+                createdAt: { $gte: oneMonthAgo }
+            });
+
+        res.status(200).json({ status: true, data: recentProducts });
+    } catch (error) {
+        res.status(500).json({ status: false, message: "Failed: " + error });
+    }
+});
 
 // /**
 //  * @swagger
