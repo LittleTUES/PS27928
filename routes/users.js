@@ -342,8 +342,28 @@ router.post('/register', [
  *     responses:
  *       '200':
  *         description: Email đặt lại mật khẩu đã được gửi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
  *       '404':
  *         description: Không tìm thấy người dùng
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
  */
 router.post('/login/forgot-password', async (req, res) => {
     const { email } = req.body;
@@ -359,9 +379,9 @@ router.post('/login/forgot-password', async (req, res) => {
         await user.save();
         // Gửi email đặt lại mật khẩu
         await sendMail.sendPasswordResetEmail(email, user.name, resetToken);
-        res.status(200).json({ message: 'Password reset email sent' });
+        res.status(200).json({ status: false, message: 'Password reset email sent' });
     } else {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ status: false, message: 'User not found' });
     }
 });
 
@@ -388,8 +408,28 @@ router.post('/login/forgot-password', async (req, res) => {
  *     responses:
  *       '200':
  *         description: Password has been reset
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
  *       '400':
  *         description: Failed to reset password or token is invalid/expired
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
  */
 router.post('/login/reset-password', async (req, res) => {
     const { token, newPassword } = req.body;
@@ -404,20 +444,115 @@ router.post('/login/reset-password', async (req, res) => {
             user.resetPasswordExpires = undefined;
             await user.save();
 
-            res.status(200).json({ message: 'Password has been reset' });
+            res.status(200).json({ status: false, message: 'Password has been reset' });
         } else {
-            return res.status(400).json({ message: 'Token is invalid or has expired' });
+            return res.status(400).json({ status: false, message: 'Token is invalid or has expired' });
         }
     } catch (err) {
-        res.status(400).json({ message: 'Failed to reset password: ' + err });
+        res.status(400).json({ status: false, message: 'Failed to reset password: ' + err });
     }
 });
 
+/**
+ * @swagger
+ * /users/carts:
+ *   post:
+ *     summary: Get carts by user Id
+ *     tags: 
+ *       - Cart
+ *     parameters:
+ *       - in: query
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the user
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       userId:
+ *                         type: string
+ *                       productId:
+ *                         type: string
+ *                       quantity:
+ *                         type: number
+ *       '400':
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *       '404':
+ *         description: User not exist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ */
+router.get('/carts', async (req, res) => {
+    try {
+        const { userId } = req.query.id;
+        if (!userId) {
+            return res.status(400).json({
+                status: false,
+                message: "User Id is require"
+            });
+        }
 
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                status: false,
+                message: "User not exist"
+            });
+        }
+
+        const carts = await Cart.find({ userId: userId });
+        res.status(200).json({ status: false, data: carts });
+    } catch (error) {
+        res.status(500).json({ status: false, message: 'Failed: ' + error });
+    }
+});
 
 /**
  * @swagger
- * /carts/add:
+ * /users/carts/add:
  *   post:
  *     summary: Add or update cart
  *     tags: 
