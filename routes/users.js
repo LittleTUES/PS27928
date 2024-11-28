@@ -527,11 +527,11 @@ router.post('/login/reset-password', async (req, res) => {
  */
 router.get('/carts', async (req, res) => {
     try {
-        const { userId } = req.query.id;
+        const userId = req.query.id;
         if (!userId) {
             return res.status(400).json({
                 status: false,
-                message: "User Id is require"
+                message: "User Id is required"
             });
         }
 
@@ -539,14 +539,14 @@ router.get('/carts', async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 status: false,
-                message: "User not exist"
+                message: "User not found"
             });
         }
 
         const carts = await Cart.find({ userId: userId });
-        res.status(200).json({ status: false, data: carts });
+        res.status(200).json({ status: true, data: carts });
     } catch (error) {
-        res.status(500).json({ status: false, message: 'Failed: ' + error });
+        res.status(500).json({ status: false, message: 'Failed: ' + error.message });
     }
 });
 
