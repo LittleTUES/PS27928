@@ -456,7 +456,7 @@ router.post('/login/reset-password', async (req, res) => {
 /**
  * @swagger
  * /users/carts:
- *   post:
+ *   get:
  *     summary: Get carts by user Id
  *     tags: 
  *       - Cart
