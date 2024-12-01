@@ -468,7 +468,7 @@ router.post('/login/reset-password', async (req, res) => {
  *           type: string
  *         description: ID of the user
  *     responses:
- *       '200':
+ *       '201':
  *         description: Successful operation
  *         content:
  *           application/json:
@@ -672,7 +672,7 @@ router.post('/carts/add', async function (req, res) {
             await cart.save();
         }
 
-        res.status(200).json({
+        res.status(201).json({
             status: true,
             data: cart,
         });
