@@ -7,6 +7,12 @@ const delivery = new Schema({
         type: String, // kiểu dữ liệu
         required: true,
     },
+    fee: {
+        type: Number,
+    },
+    deliveryRange: {
+        type: [Number],
+    }
 
 });
 module.exports = mongoose.models.delivery || mongoose.model('delivery', delivery);
