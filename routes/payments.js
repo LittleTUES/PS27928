@@ -8,7 +8,7 @@ const config = require("../utils/config-env");
 
 /**
  * @swagger
- * /deliveries:
+ * /payments:
  *   get:
  *     summary: Get all payment methods
  *     tags: 
