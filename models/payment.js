@@ -8,12 +8,6 @@ const payment = new Schema({
         required: true,
         unique: true,
     },
-    national: {
-        type: String, 
-    },
-    price: {
-        type: Number,
-    }
 
 });
 module.exports = mongoose.models.payment || mongoose.model('payment', payment);

@@ -9,9 +9,14 @@ const bill = new Schema({
         type: ObjectId,
         ref: 'payment'
     },
-    deliveryId: {
-        type: ObjectId,
-        ref: 'delivery'
+    deliveryMethod: {
+        name: {
+            type: String,
+            required: true,
+        },
+        fee: {
+            type: Number,
+        },
     }
 });
 module.exports = mongoose.models.bill || mongoose.model('bill', bill);
