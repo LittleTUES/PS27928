@@ -5,6 +5,23 @@ const bill = new Schema({
     id: { type: ObjectId }, //khóa chính
     createdAt: { type: Date },
     status: { type: Boolean },
+    user: {
+        userId: {
+            type: String
+        },
+        name: {
+            type: String
+        },
+        email: {
+            type: String
+        },
+        address: {
+            type: String
+        },
+        phone: {
+            type: String
+        },
+    },
     paymentId: {
         type: ObjectId,
         ref: 'payment'
@@ -17,6 +34,6 @@ const bill = new Schema({
         fee: {
             type: Number,
         },
-    }
+    },
 });
 module.exports = mongoose.models.bill || mongoose.model('bill', bill);

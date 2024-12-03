@@ -22,6 +22,8 @@ var productsRouter = require('./routes/products');
 var cartsRouter = require('./routes/carts');
 var deliveriesRouter = require('./routes/deliveries');
 var paymentsRouter = require('./routes/payments');
+var billsRouter = require('./routes/bills');
+var billDetailsRouter = require('./routes/billDetails');
 
 var successRouter = require('./routes/success'); 
 var cancelRouter = require('./routes/cancel'); 
@@ -60,6 +62,8 @@ app.use('/products', productsRouter);
 app.use('/carts', cartsRouter);
 app.use('/deliveries', deliveriesRouter);
 app.use('/payments', paymentsRouter);
+app.use('/bills', billsRouter);
+app.use('/bill-details', billDetailsRouter);
 
 
 // app.use('/sizes', sizesRouter);
