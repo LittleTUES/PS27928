@@ -810,4 +810,101 @@ router.post('/bills/add', async function (req, res) {
     }
 });
 
+/**
+ * @swagger
+ * /users/bills:
+ *   get:
+ *     summary: Get list of bill by userId
+ *     tags: 
+ *       - Bill
+ *     description: Retrieve a list of all bills for a specific user
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: User ID
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       createdAt:
+ *                         type: string
+ *                       status:
+ *                         type: boolean
+ *                       user:
+ *                         type: object
+ *                         properties:
+ *                           userId:
+ *                             type: string
+ *                           name:
+ *                             type: string
+ *                           email:
+ *                             type: string
+ *                           address:
+ *                             type: string
+ *                           phone:
+ *                             type: string
+ *                       paymentId:
+ *                         type: string
+ *                       deliveryMethod:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                           fee:
+ *                             type: number   
+ *                           estimated:
+ *                             type: string     
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ */
+router.get('/bills', async function (req, res) {
+    const userId = req.query.userId;
+
+    if (!userId) {
+        return res.status(400).json({
+            status: false,
+            message: 'userId is required'
+        });
+    }
+
+    try {
+        const bills = await Bill.find({ 'user.userId': userId }).exec();
+        res.status(200).json({
+            status: true,
+            data: bills,
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: 'Failed: ' + error.message,
+        });
+    }
+});
+
 module.exports = router;
