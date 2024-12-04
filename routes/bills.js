@@ -113,7 +113,7 @@ router.get('/', async function (req, res) {
  *                     type: string
  *                   phone:
  *                     type: string
- *               payment:
+ *               paymentMethod:
  *                 type: string
  *               deliveryMethod:
  *                 type: object

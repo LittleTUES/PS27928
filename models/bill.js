@@ -22,7 +22,7 @@ const bill = new Schema({
             type: String
         },
     },
-    paymentId: {
+    paymentMethod: {
         type: String,
     },
     deliveryMethod: {
