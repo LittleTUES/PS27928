@@ -213,7 +213,7 @@ router.post('/bill-details/add', async function (req, res) {
 
 /**
  * @swagger
- * /bill-details:
+ * /bills/bill-details:
  *   get:
  *     summary: Get list of Bill details by Bill ID
  *     tags: 
