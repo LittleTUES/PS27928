@@ -54,7 +54,9 @@ const BillDetail = require('../models/billDetail'); // Đảm bảo đường d�
  *                           name:
  *                             type: string
  *                           fee:
- *                             type: number        
+ *                             type: number   
+ *                           estimated:
+ *                             type: string     
  *       '500':
  *         description: Server error
  *         content:
@@ -111,7 +113,7 @@ router.get('/', async function (req, res) {
  *                     type: string
  *                   phone:
  *                     type: string
- *               paymentId:
+ *               payment:
  *                 type: string
  *               deliveryMethod:
  *                 type: object
@@ -120,6 +122,8 @@ router.get('/', async function (req, res) {
  *                     type: string
  *                   fee:
  *                     type: number
+ *                   estimated:
+ *                     type: string
  *     responses:
  *       '201':
  *         description: Bill created successfully
