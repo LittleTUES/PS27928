@@ -681,5 +681,134 @@ router.post('/carts/add', async function (req, res) {
     }
 });
 
+/**
+ * @swagger
+ * /users/bills/add:
+ *   post:
+ *     summary: Add a new Bill
+ *     tags: 
+ *       - Bill
+ *     description: Add a new Bill to the database
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user:
+ *                 type: object
+ *                 properties:
+ *                   userId:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   address:
+ *                     type: string
+ *                   phone:
+ *                     type: string
+ *               paymentMethod:
+ *                 type: string
+ *               deliveryMethod:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                   fee:
+ *                     type: number
+ *                   estimated:
+ *                     type: string
+ *     responses:
+ *       '201':
+ *         description: Bill created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *       '400':
+ *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid input
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ */
+router.post('/bills/add', async function (req, res) {
+    const { user, paymentMethod, deliveryMethod } = req.body;
+
+    // Kiểm tra các thuộc tính của user
+    if (!user || !user.userId || !user.name || !user.email || !user.address || !user.phone) {
+        return res.status(400).json({
+            status: false,
+            message: 'Invalid user input'
+        });
+    }
+
+    // Kiểm tra các thuộc tính của deliveryMethod
+    if (!deliveryMethod || !deliveryMethod.name || !deliveryMethod.fee || !deliveryMethod.estimated) {
+        return res.status(400).json({
+            status: false,
+            message: 'Invalid delivery method input'
+        });
+    }
+
+    // Kiểm tra paymentMethod
+    if (!paymentMethod) {
+        return res.status(400).json({
+            status: false,
+            message: 'Payment method is required'
+        });
+    }
+
+    try {
+        const newBill = await Bill.create({
+            user,
+            paymentMethod,
+            deliveryMethod,
+            status: true,
+            createdAt: new Date(),
+        });
+
+        res.status(201).json({
+            status: true,
+            data: {
+                _id: newBill._id
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: 'Failed: ' + error.message,
+        });
+    }
+});
 
 module.exports = router;
