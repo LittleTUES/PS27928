@@ -4,6 +4,7 @@ const sendMail = require('../utils/config-nodemailer');
 const User = require("../models/user");
 const Cart = require("../models/cart");
 const Product = require("../models/product");
+const Bill = require("../models/bill");
 const { createResetToken } = require('../utils/auth');
 const JWT = require('jsonwebtoken');
 const config = require("../utils/config-env");
