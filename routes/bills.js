@@ -87,7 +87,7 @@ router.get('/', async function (req, res) {
 
 /**
  * @swagger
- * /bills/bill-detail/add:
+ * /bills/bill-details/add:
  *   post:
  *     summary: Add a new Bill detail
  *     tags: 
@@ -177,7 +177,7 @@ router.get('/', async function (req, res) {
  *                 message:
  *                   type: string
  */
-router.post('/bill-detail/add', async function (req, res) {
+router.post('/bill-details/add', async function (req, res) {
     const { billId, product, quantity, subtotal } = req.body;
 
     // Kiểm tra đầu vào
@@ -201,6 +201,107 @@ router.post('/bill-detail/add', async function (req, res) {
         res.status(201).json({
             status: true,
             data: savedBillDetail
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: 'Failed: ' + error.message,
+        });
+    }
+});
+
+
+/**
+ * @swagger
+ * /bill-details:
+ *   get:
+ *     summary: Get list of Bill details by Bill ID
+ *     tags: 
+ *       - Bill Detail
+ *     description: Retrieve a list of all Bill details by Bill ID
+ *     parameters:
+ *       - in: query
+ *         name: billId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the bill
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       billId:
+ *                         type: string
+ *                       product:
+ *                         type: object
+ *                         properties:
+ *                           productId:
+ *                             type: string
+ *                           name:
+ *                             type: string
+ *                           subcategory:
+ *                             type: string
+ *                           price:
+ *                             type: number
+ *                           image:
+ *                             type: string
+ *                       quantity:
+ *                         type: number
+ *                       subtotal:
+ *                         type: number
+ *       '400':
+ *         description: Invalid input
+ *       '404':
+ *         description: Bill details not found
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ */
+router.get('/bill-details', async function (req, res) {
+    const { billId } = req.query;
+
+    if (!billId) {
+        return res.status(400).json({
+            status: false,
+            message: 'Bill ID is required'
+        });
+    }
+
+    try {
+        // Tìm tất cả chi tiết hóa đơn theo billId
+        const billDetails = await BillDetail.find({ billId }).exec();
+
+        // Kiểm tra nếu không tìm thấy chi tiết hóa đơn
+        if (!billDetails || billDetails.length === 0) {
+            return res.status(404).json({
+                status: false,
+                message: 'No bill details found for the given Bill ID'
+            });
+        }
+
+        res.status(200).json({
+            status: true,
+            data: billDetails,
         });
     } catch (error) {
         res.status(500).json({

@@ -48,7 +48,6 @@ const config = require("../utils/config-env");
  *                         type: number
  *                       subtotal:
  *                         type: number
- *                     
  *       '500':
  *         description: Server error
  *         content:

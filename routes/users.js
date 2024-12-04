@@ -800,9 +800,7 @@ router.post('/bills/add', async function (req, res) {
 
         res.status(201).json({
             status: true,
-            data: {
-                _id: newBill._id
-            }
+            data: newBill
         });
     } catch (error) {
         res.status(500).json({
