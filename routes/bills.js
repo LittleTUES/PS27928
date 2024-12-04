@@ -166,24 +166,39 @@ router.get('/', async function (req, res) {
  *                   type: string
  */
 router.post('/add', async function (req, res) {
-    const { user, paymentId, deliveryMethod } = req.body;
+    const { user, paymentMethod, deliveryMethod } = req.body;
 
-    // Kiểm tra đầu vào
-    if (!user || !paymentId || !deliveryMethod) {
+    // Kiểm tra các thuộc tính của user
+    if (!user || !user.userId || !user.name || !user.email || !user.address || !user.phone) {
         return res.status(400).json({
             status: false,
-            message: 'Invalid input'
+            message: 'Invalid user input'
+        });
+    }
+
+    // Kiểm tra các thuộc tính của deliveryMethod
+    if (!deliveryMethod || !deliveryMethod.name || !deliveryMethod.fee || !deliveryMethod.estimated) {
+        return res.status(400).json({
+            status: false,
+            message: 'Invalid delivery method input'
+        });
+    }
+
+    // Kiểm tra paymentMethod
+    if (!paymentMethod) {
+        return res.status(400).json({
+            status: false,
+            message: 'Payment method is required'
         });
     }
 
     try {
-        // Tạo mới Bill
         const newBill = await Bill.create({
             user,
-            paymentId,
+            paymentMethod,
             deliveryMethod,
-            status: true, // Bạn có thể thay đổi giá trị này theo yêu cầu
-            createdAt: new Date(), // Tự động thêm thời gian tạo
+            status: true,
+            createdAt: new Date(),
         });
 
         res.status(201).json({
@@ -199,6 +214,7 @@ router.post('/add', async function (req, res) {
         });
     }
 });
+
 
 /**
  * @swagger
