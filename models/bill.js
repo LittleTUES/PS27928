@@ -34,6 +34,9 @@ const bill = new Schema({
         fee: {
             type: Number,
         },
+        estimated: {
+            type: String,
+        }
     },
 });
 module.exports = mongoose.models.bill || mongoose.model('bill', bill);
