@@ -910,7 +910,7 @@ router.get('/bills', async function (req, res) {
 
 /**
  * @swagger
- * /bills/details:
+ * /users/bill/details:
  *   get:
  *     summary: Get bill and its details by Bill ID
  *     tags: 
@@ -1011,7 +1011,7 @@ router.get('/bills', async function (req, res) {
  *                   type: string
  */
 // Lấy thông tin hóa đơn và chi tiết hóa đơn theo billId
-router.get('/bills/details', async function (req, res) {
+router.get('/bill/details', async function (req, res) {
     const { billId } = req.query;
 
     if (!billId) {
