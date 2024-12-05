@@ -5,6 +5,7 @@ const User = require("../models/user");
 const Cart = require("../models/cart");
 const Product = require("../models/product");
 const Bill = require("../models/bill");
+const BillDetail = require("../models/billDetail");
 const { createResetToken } = require('../utils/auth');
 const JWT = require('jsonwebtoken');
 const config = require("../utils/config-env");
@@ -906,5 +907,153 @@ router.get('/bills', async function (req, res) {
         });
     }
 });
+
+/**
+ * @swagger
+ * /bills/details:
+ *   get:
+ *     summary: Get bill and its details by Bill ID
+ *     tags: 
+ *       - Bill
+ *     description: Retrieve a specific bill and its details by Bill ID
+ *     parameters:
+ *       - in: query
+ *         name: billId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Bill ID
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     bill:
+ *                       type: object
+ *                       properties:
+ *                         _id:
+ *                           type: string
+ *                         createdAt:
+ *                           type: string
+ *                         status:
+ *                           type: boolean
+ *                         user:
+ *                           type: object
+ *                           properties:
+ *                             userId:
+ *                               type: string
+ *                             name:
+ *                               type: string
+ *                             email:
+ *                               type: string
+ *                             address:
+ *                               type: string
+ *                             phone:
+ *                               type: string
+ *                         paymentMethod:
+ *                           type: string
+ *                         deliveryMethod:
+ *                           type: object
+ *                           properties:
+ *                             name:
+ *                               type: string
+ *                             fee:
+ *                               type: number   
+ *                             estimated:
+ *                               type: string
+ *                     billDetails:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           billId:
+ *                             type: string
+ *                           product:
+ *                             type: object
+ *                             properties:
+ *                               productId:
+ *                                 type: string
+ *                               name:
+ *                                 type: string
+ *                               subcategory:
+ *                                 type: string
+ *                               price:
+ *                                 type: number
+ *                               image:
+ *                                 type: string
+ *                           quantity:
+ *                             type: number
+ *                           subtotal:
+ *                             type: number
+ *       '400':
+ *         description: Invalid input
+ *       '404':
+ *         description: Bill or bill details not found
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ */
+// Lấy thông tin hóa đơn và chi tiết hóa đơn theo billId
+router.get('/bills/details', async function (req, res) {
+    const { billId } = req.query;
+
+    if (!billId) {
+        return res.status(400).json({
+            status: false,
+            message: 'Bill ID is required'
+        });
+    }
+
+    try {
+        // Tìm hóa đơn theo billId
+        const bill = await Bill.findById(billId).exec();
+        if (!bill) {
+            return res.status(404).json({
+                status: false,
+                message: 'Bill not found for the given Bill ID'
+            });
+        }
+
+        // Tìm tất cả chi tiết hóa đơn theo billId
+        const billDetails = await BillDetail.find({ billId }).exec();
+        if (!billDetails || billDetails.length === 0) {
+            return res.status(404).json({
+                status: false,
+                message: 'No bill details found for the given Bill ID'
+            });
+        }
+
+        res.status(200).json({
+            status: true,
+            data: {
+                bill: bill,
+                billDetails: billDetails
+            },
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: `Failed: ${error.message}`,
+        });
+    }
+});
+
 
 module.exports = router;
