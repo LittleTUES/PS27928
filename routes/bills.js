@@ -2,7 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 var Bill = require("../models/bill");
-const BillDetail = require('../models/billDetail'); // Đảm bảo đường dẫn đúng đến model của bạn
+var Product = require('../models/product')
+var BillDetail = require('../models/billDetail'); // Đảm bảo đường dẫn đúng đến model của bạn
 
 /**
  * @swagger
@@ -102,23 +103,32 @@ router.get('/', async function (req, res) {
  *             properties:
  *               billId:
  *                 type: string
+ *                 description: The ID of the bill
  *               product:
  *                 type: object
+ *                 description: The product details
  *                 properties:
  *                   productId:
  *                     type: string
+ *                     description: The ID of the product
  *                   name:
  *                     type: string
+ *                     description: The name of the product
  *                   subcategory:
  *                     type: string
+ *                     description: The subcategory of the product
  *                   price:
  *                     type: number
+ *                     description: The price of the product
  *                   image:
  *                     type: string
+ *                     description: The image URL of the product
  *               quantity:
  *                 type: number
+ *                 description: The quantity of the product
  *               subtotal:
  *                 type: number
+ *                 description: The subtotal for the product
  *     responses:
  *       '201':
  *         description: Bill detail created successfully
@@ -127,8 +137,9 @@ router.get('/', async function (req, res) {
  *             schema:
  *               type: object
  *               properties:
- *                 success:
+ *                 status:
  *                   type: boolean
+ *                   description: Indicates if the request was successful
  *                 data:
  *                   type: object
  *                   properties:
@@ -198,6 +209,15 @@ router.post('/bill-details/add', async function (req, res) {
         };
         // Lưu vào cơ sở dữ liệu
         const savedBillDetail = await BillDetail.create(newBillDetail);
+        if (savedBillDetail) {
+            const productData = await Product.findById(product.productId);
+            const newStock = productData.stock - quantity;
+            await Product.findByIdAndUpdate(
+                product.productId,
+                { $set: { stock: newStock } },
+                { new: true }
+            );
+        }
         res.status(201).json({
             status: true,
             data: savedBillDetail
