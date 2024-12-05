@@ -217,6 +217,8 @@ router.post('/bill-details/add', async function (req, res) {
                 { $set: { stock: newStock } },
                 { new: true }
             );
+            const billData = await Bill.findById(billId);
+            await Cart.deleteOne({ userId: billData.user.userId, productId: product.productId });
         }
         res.status(201).json({
             status: true,
