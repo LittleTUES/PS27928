@@ -3,6 +3,7 @@ var router = express.Router();
 
 var Bill = require("../models/bill");
 var Product = require('../models/product')
+var Cart = require('../models/cart')
 var BillDetail = require('../models/billDetail'); // Đảm bảo đường dẫn đúng đến model của bạn
 
 /**
