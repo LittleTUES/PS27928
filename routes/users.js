@@ -801,7 +801,7 @@ router.post('/bills/add', async function (req, res) {
 
         res.status(201).json({
             status: true,
-            data: newBill
+            data: newBill._id
         });
     } catch (error) {
         res.status(500).json({
